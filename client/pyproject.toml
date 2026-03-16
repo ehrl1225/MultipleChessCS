@@ -1,0 +1,10 @@
+[project]
+name = "MultipleChessClient"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pyqt6>=6.10.2",
+    "signalrcore>=1.0.2",
+]

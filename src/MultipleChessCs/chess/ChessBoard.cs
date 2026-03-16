@@ -1,0 +1,8 @@
+
+namespace Chess
+{
+    class ChessBoard
+    {
+        
+    }
+}
