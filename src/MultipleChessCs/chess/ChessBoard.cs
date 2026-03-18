@@ -1,8 +1,0 @@
-
-namespace Chess
-{
-    class ChessBoard
-    {
-        
-    }
-}

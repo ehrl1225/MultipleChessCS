@@ -1,32 +1,23 @@
-﻿using Server;
-using Chess;
+﻿using Microsoft.AspNetCore.Identity;
+using Domain.Player;
+using Domain.Player.AuthService;
+using Common.ChessManager;
+namespace Main;
 
-namespace Main
+class Program
 {
-    class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            if (args.Length >= 2)
-            {
-                Console.WriteLine("Too many argument");
-                return;
-            } else if (args.Length == 0)
-            {
-                Console.WriteLine("Need more argument");
-                return;
-            }
-            string arg = args[0];
-            int port;
-            bool result = int.TryParse(arg, out port);
-            if (!result)
-            {
-                Console.WriteLine("argument is not int");
-            }
-            Server.Server server = new(port);
-            server.Run();
-            
-        }
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddSignalR();
+        builder.Services.AddDbContext<AppDbContext>();
+        builder.Services.AddScoped<IPasswordHasher<Player>, PasswordHasher<Player>>();
+        builder.Services.AddScoped<AuthService>();
+        builder.Services.AddSingleton<ChessManager>();
+
+        WebApplication app = builder.Build();
+
+        app.Run();
     }
-    
 }
+    

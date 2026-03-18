@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:18
+    container_name: "postgres"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}:-"your_password"
+      POSTGRES_DB: "chess"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql
+    ports:
+      "5432:5432"
+    restart: unless-stopped
