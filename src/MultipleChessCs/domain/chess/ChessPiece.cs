@@ -1,21 +1,24 @@
-using domain.Chess.ChessTeam;
-
 namespace Domain.Chess.ChessPiece;
+using Domain.Chess.ChessTeam;
+using Domain.Chess.ChessLocation;
+
 
 
 class ChessPiece
 {
     private readonly int index;
-    private ChessLocation initLocation;
-    private ChessLocation location;
-    private readonly ChessTeam team;
-    private readonly ChessClass chessClass;
-    private bool isDead;
+    private readonly ChessLocation initLocation;
+    public ChessLocation location {get; private set;}
+    public readonly ChessTeam team;
+    public readonly ChessClass chessClass;
+    public bool isDead {get; private set;}
 
     // for pawn
-    private bool promoted;
-    private ChessClass? promotedClass;
-    private bool isFirstMove;
+    public bool promoted {get; private set;}
+    public ChessClass? promotedClass {get; private set;}
+    // 0, 1, 2의 값을 가짐
+    // 폰의 경우 앙파상을 확인하기 위해 한번 움직이면 다른 팀이 움직일 때도 카운트를 함
+    public int moveCount {get; private set;}
 
 
     public ChessPiece(
@@ -23,16 +26,27 @@ class ChessPiece
         ChessLocation initLocation,
         ChessTeam team,
         ChessClass chessClass
+    ):this(index, initLocation.x, initLocation.y, team, chessClass)
+    {}
+
+    public ChessPiece(
+        int index,
+        int x,
+        int y,
+        ChessTeam team,
+        ChessClass chessClass
     )
     {
+        ChessLocation initLocation = new(x,y);
         this.index = index;
         this.initLocation = initLocation;
-        this.location = initLocation.copy();
+        location = initLocation.Copy();
         this.team = team;
         this.chessClass = chessClass;
         isDead = false;
         promoted = false;
         promotedClass = null;
+        moveCount = 0;
     }
 
     public void promote(ChessClass promoteClass)
@@ -41,9 +55,13 @@ class ChessPiece
         promotedClass = promoteClass;
     }
 
-    public void move(int x, int y)
+    public void move(ChessLocation location)
     {
-        location.move(x, y);
+        this.location.Move(location);
+        if (moveCount < 2)
+        {
+            moveCount++;
+        }
     }
 
     public void kill()
@@ -51,11 +69,18 @@ class ChessPiece
         isDead = true;
     }
 
+    private bool isInitLocation()
+    {
+        return initLocation.Equals(location);
+    }
+
     public void reset()
     {
         promoted = false;
         promotedClass = null;
         isDead = false;
+        location.Move(initLocation);
+        moveCount = 0;
     }
 
 }

@@ -1,3 +1,3 @@
-namespace domain.Chess.ChessTeam;
+namespace Domain.Chess.ChessTeam;
 
 public enum ChessTeam {White, Black}

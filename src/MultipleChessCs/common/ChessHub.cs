@@ -1,10 +1,9 @@
 namespace common.ChessHub;
 
-using System.Security.Cryptography.X509Certificates;
 using Common.ChatTarget;
 using Common.ChessHubInterface;
 using Common.ChessManager;
-using domain.Chess.ChessTeam;
+using Domain.Chess.ChessTeam;
 using Domain.Player.AuthService;
 using Microsoft.AspNetCore.SignalR;
 

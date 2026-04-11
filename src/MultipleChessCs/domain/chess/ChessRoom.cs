@@ -1,7 +1,7 @@
-using Chess.ChessBoard;
-using domain.Chess.ChessTeam;
+namespace Domain.Chess.ChessRoom;
+using Domain.Chess.ChessBoard;
+using Domain.Chess.ChessTeam;
 
-namespace Domain.ChessRoom;
 
 
 public class ChessRoom

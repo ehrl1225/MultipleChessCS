@@ -1,9 +1,7 @@
-using System.Collections.Concurrent;
-using System.Security.Cryptography.X509Certificates;
-using Domain.ChessRoom;
-using Room.RoomService;
-
 namespace Common.ChessManager;
+using System.Collections.Concurrent;
+using Domain.Chess.ChessRoom;
+
 
 
 public class ChessManager
