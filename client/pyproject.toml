@@ -6,5 +6,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "pyqt6>=6.10.2",
+    "pytest>=9.0.3",
     "signalrcore>=1.0.2",
 ]
