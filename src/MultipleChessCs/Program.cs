@@ -2,6 +2,7 @@
 using Domain.Player;
 using Domain.Player.AuthService;
 using Common.ChessManager;
+using Common.ChessHub;
 namespace Main;
 
 class Program
@@ -16,6 +17,7 @@ class Program
         builder.Services.AddSingleton<ChessManager>();
         Console.WriteLine("빌드 시작");
         WebApplication app = builder.Build();
+        app.MapHub<ChessHub>("/chess_hub");
         Console.WriteLine("실행");
 
         app.Run();
