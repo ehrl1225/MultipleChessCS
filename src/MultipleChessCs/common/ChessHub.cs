@@ -1,4 +1,4 @@
-namespace common.ChessHub;
+namespace Common.ChessHub;
 
 using Common.ChatTarget;
 using Common.ChessHubInterface;
@@ -94,6 +94,12 @@ public class ChessHub : Hub<ChessHubInterface>
                     break;
                 }
         }
+    }
+
+    public async Task Ping(string message)
+    {
+        Console.WriteLine($"Received : {message}");
+        await Clients.Caller.Pong("Pong");
     }
 
 }

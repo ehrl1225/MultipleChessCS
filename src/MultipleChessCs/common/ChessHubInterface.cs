@@ -7,4 +7,5 @@ public interface ChessHubInterface
     Task GroupNotice(string message);
     Task CallerMessage(string message);
     Task SendMessage(string sender, string message);
+    Task Pong(string message);
 }
