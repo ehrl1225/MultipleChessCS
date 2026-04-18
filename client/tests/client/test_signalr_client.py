@@ -4,25 +4,28 @@ import logging
 from signalrcore.hub_connection_builder import HubConnectionBuilder
 from signalrcore.hub.base_hub_connection import BaseHubConnection
 
+def make_connection() -> BaseHubConnection:
+    url = "http://127.0.0.1:5000/chess_hub"
+    return (
+        HubConnectionBuilder()
+        .with_url(url)
+        .configure_logging(logging.DEBUG)
+        .with_automatic_reconnect({
+            "type": "raw",
+            "keep_alive_interval": 10,
+            "reconnect_interval": 5,
+            "max_attempts": 5,
+        })
+        .build()
+    )
+
 @pytest.mark.asyncio
 async def test_ping_pong():
     print()
     pong_received = asyncio.get_running_loop().create_future()
     loop = asyncio.get_running_loop()
 
-    url = "http://127.0.0.1:5000/chess_hub"
-    connection: BaseHubConnection = (
-        HubConnectionBuilder()
-        .with_url(url)
-        .configure_logging(logging.DEBUG)
-        .with_automatic_reconnect({
-            "type" : "raw",
-            "keep_alive_interval" : 10,
-            "reconnect_interval" : 5,
-            "max_attempts" : 5,
-        })
-        .build()
-    )
+    connection:BaseHubConnection = make_connection()
     def on_open():
         print("Connection opened")
         connection.send("Ping", ["ping"])
