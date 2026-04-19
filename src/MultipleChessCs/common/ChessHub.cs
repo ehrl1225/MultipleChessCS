@@ -4,7 +4,8 @@ using System.Net.WebSockets;
 using Common.ChatTarget;
 using Common.ChessHubInterface;
 using Common.ChessManager;
-using Domain.Chess.ChessTeam;
+using Domain.Chess.Enum.ChessTeam;
+using Domain.Chess.ChessRoom;
 using Domain.Player.AuthService;
 using Microsoft.AspNetCore.SignalR;
 
@@ -112,7 +113,7 @@ public class ChessHub : Hub<ChessHubInterface>
                 {
                     if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
                     {
-                        await Clients.SendMessage(username, message);
+                        await Clients.All.SendMessage(username, message);
                     }
                     break;  
                 }

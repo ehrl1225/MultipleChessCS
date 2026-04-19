@@ -2,6 +2,8 @@ namespace Domain.Chess.ChessBoard;
 using Domain.Chess.ChessPiece;
 using Domain.Chess.ChessLocation;
 using Domain.Chess.ChessThreat;
+using Domain.Chess.Enum.ChessTeam;
+using Domain.Chess.Enum.ChessClass;
 
 class ChessBoard
 {

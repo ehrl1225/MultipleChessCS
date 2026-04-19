@@ -1,6 +1,6 @@
 namespace Domain.Chess.ChessRoom;
 using Domain.Chess.ChessBoard;
-using Domain.Chess.ChessTeam;
+using Domain.Chess.Enum.ChessTeam;
 using Domain.Chess.ChessPlayer;
 
 
@@ -9,7 +9,7 @@ public class ChessRoom
     private readonly string _roomId;
     private ChessTeam currentTurn;
     private ChessBoard chessBoard;
-    private readonly List<ChessPlayer> _players = new();
+    private readonly Dictionary<string, ChessPlayer> _players = new();
     private int MaxPlayers = 10;
     private readonly object _lock = new();
 
@@ -39,11 +39,11 @@ public class ChessRoom
             {
                 return false;
             }
-            if (_players.Contains(playerName))
+            if (_players.ContainsKey(playerName))
             {
                 return false;
             }
-            _players.Add(playerName);
+            _players.Add(playerName, new ChessPlayer(playerName));
             return true;
         }
     }
@@ -52,7 +52,7 @@ public class ChessRoom
     {
         lock (_lock)
         {
-            if (!_players.Contains(playerName))
+            if (!_players.ContainsKey(playerName))
             {
                 return false;
             }
