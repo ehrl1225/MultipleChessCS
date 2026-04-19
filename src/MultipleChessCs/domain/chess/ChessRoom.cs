@@ -1,7 +1,7 @@
 namespace Domain.Chess.ChessRoom;
 using Domain.Chess.ChessBoard;
 using Domain.Chess.ChessTeam;
-
+using Domain.Chess.ChessPlayer;
 
 
 public class ChessRoom
@@ -9,6 +9,9 @@ public class ChessRoom
     private readonly string _roomId;
     private ChessTeam currentTurn;
     private ChessBoard chessBoard;
+    private readonly List<ChessPlayer> _players = new();
+    private int MaxPlayers = 10;
+    private readonly object _lock = new();
 
 
     public ChessRoom(string roomId)
@@ -28,5 +31,34 @@ public class ChessRoom
         currentTurn = ChessTeam.White;
     }
 
+    public bool TryJoin(string playerName)
+    {
+        lock (_lock)
+        {
+            if (_players.Count >= MaxPlayers)
+            {
+                return false;
+            }
+            if (_players.Contains(playerName))
+            {
+                return false;
+            }
+            _players.Add(playerName);
+            return true;
+        }
+    }
+
+    public bool TryExit(string playerName)
+    {
+        lock (_lock)
+        {
+            if (!_players.Contains(playerName))
+            {
+                return false;
+            }
+            _players.Remove(playerName);
+            return true;
+        }
+    }
 }
 

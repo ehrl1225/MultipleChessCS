@@ -1,5 +1,6 @@
 namespace Common.ChessHub;
 
+using System.Net.WebSockets;
 using Common.ChatTarget;
 using Common.ChessHubInterface;
 using Common.ChessManager;
@@ -47,6 +48,20 @@ public class ChessHub : Hub<ChessHubInterface>
         Context.Items["Username"] = "익명";
     }
 
+    public async Task RequestJoinRoom(string roomId)
+    {
+        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
+        {
+            ChessRoom? room = _chessManager.GetByRoomId(roomId);
+            if (room == null)
+            {
+                return;
+            }
+            bool result = room.TryJoin(username);
+
+        }
+    }
+
     public async Task JoinTeam(string roomId, ChessTeam teamName)
     {
         if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
@@ -92,6 +107,14 @@ public class ChessHub : Hub<ChessHubInterface>
                         }
                     }
                     break;
+                }
+            case ChatTarget.All:
+                {
+                    if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
+                    {
+                        await Clients.SendMessage(username, message);
+                    }
+                    break;  
                 }
         }
     }

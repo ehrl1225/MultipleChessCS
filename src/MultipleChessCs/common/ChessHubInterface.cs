@@ -8,4 +8,5 @@ public interface ChessHubInterface
     Task CallerMessage(string message);
     Task SendMessage(string sender, string message);
     Task Pong(string message);
+    Task Alert(string message);
 }

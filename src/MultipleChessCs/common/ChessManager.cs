@@ -38,11 +38,11 @@ public class ChessManager
         return result;
     }
 
-    public bool GetByRoomId(string roomId)
+    public ChessRoom? GetByRoomId(string roomId)
     {
         ChessRoom? room;
-        bool result = _rooms.TryGetValue(roomId, out room);
-        return result;
+        _rooms.TryGetValue(roomId, out room);
+        return room;
     }
 
     public ICollection<ChessRoom> GetAllRoom()

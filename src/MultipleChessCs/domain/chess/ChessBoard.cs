@@ -1,7 +1,6 @@
 namespace Domain.Chess.ChessBoard;
 using Domain.Chess.ChessPiece;
 using Domain.Chess.ChessLocation;
-using Domain.Chess.ChessTeam;
 using Domain.Chess.ChessThreat;
 
 class ChessBoard
@@ -291,7 +290,7 @@ class ChessBoard
         ChessLocation location = originalLocation.Copy();
         if (chessPiece.promoted)
         {
-
+            
             return;
         }
 
