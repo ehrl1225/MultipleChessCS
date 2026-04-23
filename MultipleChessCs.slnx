@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/MultipleChessCs/MultipleChessCs.csproj" />
+    <Project Path="src/MultipleChessCsTest/MultipleChessCsTest.csproj" />
   </Folder>
 </Solution>

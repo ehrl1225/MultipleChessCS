@@ -19,6 +19,8 @@ public class ChessHub : Hub<ChessHubInterface>
         _chessManager = chessManager;
     }
 
+    // user
+
     public async Task RequestRegister(string username, string password)
     {
         try
@@ -49,6 +51,23 @@ public class ChessHub : Hub<ChessHubInterface>
         Context.Items["Username"] = "익명";
     }
 
+    // room
+
+    public async Task RequestCreateRoom(int maxPlayerCount)
+    {
+        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
+        {
+            if (Context.Items.TryGetValue("RoomId", out object? roomIdObj) && roomIdObj is string roomId) return;
+            if (_chessManager.CreateRoom(maxPlayerCount))
+            {
+                await Clients.Caller.Alert("방이 생성되었습니다.");
+            }
+            return;
+        }
+        await Clients.Caller.Alert("방이 생성되지 않았습니다.");
+
+    }
+
     public async Task RequestJoinRoom(string roomId)
     {
         if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
@@ -59,9 +78,10 @@ public class ChessHub : Hub<ChessHubInterface>
                 return;
             }
             bool result = room.TryJoin(username);
-
         }
     }
+
+    // team
 
     public async Task JoinTeam(string roomId, ChessTeam teamName)
     {
@@ -77,6 +97,8 @@ public class ChessHub : Hub<ChessHubInterface>
         }
         await Clients.Caller.CallerMessage("로그인을 해야합니다.");
     }
+
+    // chat
 
     public async Task SendChat(ChatTarget chatTarget, string message)
     {
@@ -119,6 +141,8 @@ public class ChessHub : Hub<ChessHubInterface>
                 }
         }
     }
+
+    // etc
 
     public async Task Ping(string message)
     {

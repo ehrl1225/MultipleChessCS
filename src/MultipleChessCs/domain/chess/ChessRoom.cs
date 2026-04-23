@@ -8,15 +8,16 @@ public class ChessRoom
 {
     private readonly string _roomId;
     private ChessTeam currentTurn;
-    private ChessBoard chessBoard;
-    private readonly Dictionary<string, ChessPlayer> _players = new();
+    private readonly ChessBoard chessBoard;
+    private readonly Dictionary<string, ChessPlayer> _players = [];
     private int MaxPlayers = 10;
     private readonly object _lock = new();
 
 
-    public ChessRoom(string roomId)
+    public ChessRoom(string roomId, int maxPlayers)
     {
         _roomId = roomId;
+        MaxPlayers = maxPlayers;
         currentTurn = ChessTeam.White;
         chessBoard = new ChessBoard();
     }

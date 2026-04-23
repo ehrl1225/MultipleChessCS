@@ -1,0 +1,1 @@
+docker compose --env-file src/MultipleChessCs/.env up

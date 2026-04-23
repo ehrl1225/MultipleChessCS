@@ -40,7 +40,7 @@ class ChessBoard
                 ChessClass.PAWN
             );
             pieces[whiteIndex] = whiteChessPiece;
-            board[whiteY-1, x] = whiteChessPiece;
+            board[whiteY-1, x-1] = whiteChessPiece;
             whiteIndex++;
 
             blackChessPiece = new(
@@ -51,7 +51,7 @@ class ChessBoard
                 ChessClass.PAWN
             );
             pieces[blackIndex] = blackChessPiece;
-            board[blackY, x] = blackChessPiece;
+            board[blackY-1, x-1] = blackChessPiece;
             blackIndex++;
         }
 
@@ -69,7 +69,7 @@ class ChessBoard
                 ChessClass.ROOK
             );
             pieces[whiteIndex] = whiteChessPiece;
-            board[whiteY, x] = whiteChessPiece;
+            board[whiteY-1, x-1] = whiteChessPiece;
             whiteIndex++;
 
             blackChessPiece = new(
@@ -80,7 +80,7 @@ class ChessBoard
                 ChessClass.ROOK
             );
             pieces[blackIndex] = blackChessPiece;
-            board[blackY, x] = blackChessPiece;
+            board[blackY-1, x-1] = blackChessPiece;
             blackIndex++;
         }
 
@@ -96,7 +96,7 @@ class ChessBoard
                 ChessClass.KNIGHT
             );
             pieces[whiteIndex] = whiteChessPiece;
-            board[whiteY, x] = whiteChessPiece;
+            board[whiteY-1, x-1] = whiteChessPiece;
             whiteIndex++;
 
             blackChessPiece = new(
@@ -107,7 +107,7 @@ class ChessBoard
                 ChessClass.KNIGHT
             );
             pieces[blackIndex] = blackChessPiece;
-            board[blackY, x] = blackChessPiece;
+            board[blackY-1, x-1] = blackChessPiece;
             blackIndex++;
         }
 
@@ -123,7 +123,7 @@ class ChessBoard
                 ChessClass.BISHOP
             );
             pieces[whiteIndex] = whiteChessPiece;
-            board[whiteY, x] = whiteChessPiece;
+            board[whiteY-1, x-1] = whiteChessPiece;
             whiteIndex++;
 
             blackChessPiece = new(
@@ -134,7 +134,7 @@ class ChessBoard
                 ChessClass.BISHOP
             );
             pieces[blackIndex] = blackChessPiece;
-            board[blackY, x] = blackChessPiece;
+            board[blackY-1, x-1] = blackChessPiece;
             blackIndex++;
         }
 
@@ -149,7 +149,7 @@ class ChessBoard
             ChessClass.KING
         );
         pieces[whiteIndex] = whiteChessPiece;
-        board[whiteY, x] = whiteChessPiece;
+        board[whiteY-1, x-1] = whiteChessPiece;
         whiteIndex++;
 
         blackChessPiece = new(
@@ -160,7 +160,7 @@ class ChessBoard
             ChessClass.KING
         );
         pieces[blackIndex] = blackChessPiece;
-        board[blackY, x] = blackChessPiece;
+        board[blackY-1, x-1] = blackChessPiece;
         blackIndex++;
 
         // y = 1, x = 4, index = 15 white queen
@@ -174,7 +174,7 @@ class ChessBoard
             ChessClass.QUEEN
         );
         pieces[whiteIndex] = whiteChessPiece;
-        board[whiteY, x] = whiteChessPiece;
+        board[whiteY-1, x-1] = whiteChessPiece;
 
         blackChessPiece = new(
             blackIndex,
@@ -184,7 +184,7 @@ class ChessBoard
             ChessClass.QUEEN
         );
         pieces[blackIndex] = blackChessPiece;
-        board[blackY, x] = blackChessPiece;
+        board[blackY-1, x-1] = blackChessPiece;
     }
 
     private ChessPiece? getByLocation(ChessLocation location)
