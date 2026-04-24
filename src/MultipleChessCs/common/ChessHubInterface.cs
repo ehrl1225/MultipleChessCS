@@ -1,3 +1,5 @@
+using Domain.Chess.ChessDto;
+
 namespace Common.ChessHubInterface;
 
 public interface ChessHubInterface
@@ -9,4 +11,5 @@ public interface ChessHubInterface
     Task SendMessage(string sender, string message);
     Task Pong(string message);
     Task Alert(string message);
+    Task ChessRoomListResponse(ChessRoomDto[] rooms);
 }

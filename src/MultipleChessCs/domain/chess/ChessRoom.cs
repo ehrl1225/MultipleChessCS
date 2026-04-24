@@ -6,23 +6,30 @@ using Domain.Chess.ChessPlayer;
 
 public class ChessRoom
 {
-    private readonly string _roomId;
+    public readonly string _roomId;
     private ChessTeam currentTurn;
     private readonly ChessBoard chessBoard;
     private readonly Dictionary<string, ChessPlayer> _players = [];
-    private int MaxPlayers = 10;
+    public int MaxPlayers {get; private set;} = 10;
     private readonly object _lock = new();
+    private readonly string _admin;
 
 
-    public ChessRoom(string roomId, int maxPlayers)
+    public ChessRoom(string roomId, string admin, int maxPlayers)
     {
         _roomId = roomId;
+        _admin = admin;
         MaxPlayers = maxPlayers;
         currentTurn = ChessTeam.White;
         chessBoard = new ChessBoard();
     }
 
-    public void switchTurn()
+    public bool IsAdmin(string admin)
+    {
+        return _admin == admin;
+    }
+
+    public void SwitchTurn()
     {
         if (currentTurn == ChessTeam.White)
         {

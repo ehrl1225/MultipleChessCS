@@ -8,6 +8,8 @@ using Domain.Chess.Enum.ChessTeam;
 using Domain.Chess.ChessRoom;
 using Domain.Player.AuthService;
 using Microsoft.AspNetCore.SignalR;
+using Domain.Chess.ChessMappingExtensions;
+
 
 public class ChessHub : Hub<ChessHubInterface>
 {
@@ -58,7 +60,7 @@ public class ChessHub : Hub<ChessHubInterface>
         if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
         {
             if (Context.Items.TryGetValue("RoomId", out object? roomIdObj) && roomIdObj is string roomId) return;
-            if (_chessManager.CreateRoom(maxPlayerCount))
+            if (_chessManager.CreateRoom(username, maxPlayerCount))
             {
                 await Clients.Caller.Alert("방이 생성되었습니다.");
             }
@@ -78,7 +80,23 @@ public class ChessHub : Hub<ChessHubInterface>
                 return;
             }
             bool result = room.TryJoin(username);
+            if (result) await Clients.Caller.Alert("방에 접속했습니다.");
+            else await Clients.Caller.Alert("방에 접속 실패했습니다.");
         }
+    }
+
+    public async Task RequestDeleteRoom(string roomId)
+    {
+        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
+        {
+            _chessManager.DeleteRoom(roomId, username);
+        }
+    }
+
+    public async Task GetRoomList()
+    {
+        var chessRooms = _chessManager.GetChessRooms().Select(i => i.ToDto()).ToArray();
+        await Clients.Caller.ChessRoomListResponse(chessRooms);
     }
 
     // team
