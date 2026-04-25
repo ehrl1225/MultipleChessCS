@@ -81,22 +81,38 @@ public class ChessHub : Hub<ChessHubInterface>
             }
             bool result = room.TryJoin(username);
             if (result) await Clients.Caller.Alert("방에 접속했습니다.");
-            else await Clients.Caller.Alert("방에 접속 실패했습니다.");
         }
+        await Clients.Caller.Alert("방에 접속 실패했습니다.");
     }
 
     public async Task RequestDeleteRoom(string roomId)
     {
         if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
         {
-            _chessManager.DeleteRoom(roomId, username);
+            bool result = _chessManager.DeleteRoom(roomId, username);
+            if (result) await Clients.Caller.Alert("방을 삭제했습니다.");
         }
+        await Clients.Caller.Alert("방 삭제 실패했습니다.");
     }
 
     public async Task GetRoomList()
     {
-        var chessRooms = _chessManager.GetChessRooms().Select(i => i.ToDto()).ToArray();
-        await Clients.Caller.ChessRoomListResponse(chessRooms);
+        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
+        {
+            var chessRooms = _chessManager.GetChessRooms().Select(i => i.ToDto()).ToArray();
+            await Clients.Caller.ChessRoomListResponse(chessRooms);
+            return;
+        }
+        await Clients.Caller.Alert("로그인을 해야합니다.");
+    }
+
+    public async Task StartRoomGame(string roomId)
+    {
+        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
+        {
+            _chessManager.StartGame(roomId, username);
+            return;
+        }
     }
 
     // team

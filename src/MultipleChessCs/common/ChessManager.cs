@@ -31,6 +31,14 @@ public class ChessManager
         return false;
     }
 
+    public bool StartGame(string roomId, string admin)
+    {
+        ChessRoom? room;
+        _rooms.TryGetValue(roomId, out room);
+        if (room == null) return false;
+        return room.StartGame(admin);
+    }
+
     public bool DeleteRoom(string roomId, string admin)
     {
         ChessRoom? room;
@@ -51,11 +59,5 @@ public class ChessManager
         ChessRoom? room;
         _rooms.TryGetValue(roomId, out room);
         return room;
-    }
-
-    public ICollection<ChessRoom> GetAllRoom()
-    {
-        ICollection<ChessRoom> allValues = _rooms.Values;
-        return allValues;
     }
 }

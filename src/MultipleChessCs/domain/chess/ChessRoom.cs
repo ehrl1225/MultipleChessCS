@@ -11,8 +11,9 @@ public class ChessRoom
     private readonly ChessBoard chessBoard;
     private readonly Dictionary<string, ChessPlayer> _players = [];
     public int MaxPlayers {get; private set;} = 10;
-    private readonly object _lock = new();
+    private readonly Lock _lock = new();
     private readonly string _admin;
+    public bool IsStarted {get; private set;} = false;
 
 
     public ChessRoom(string roomId, string admin, int maxPlayers)
@@ -29,6 +30,19 @@ public class ChessRoom
         return _admin == admin;
     }
 
+    public bool StartGame(string admin)
+    {
+        if (IsAdmin(admin))
+        {
+            lock (_lock)
+            {
+                IsStarted = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void SwitchTurn()
     {
         if (currentTurn == ChessTeam.White)
@@ -43,6 +57,7 @@ public class ChessRoom
     {
         lock (_lock)
         {
+            if (IsStarted) return false;
             if (_players.Count >= MaxPlayers)
             {
                 return false;

@@ -59,5 +59,11 @@ public class ChessHubTests : HubTestBase
         MockCaller.Verify( c => c.Alert("방이 생성되지 않았습니다."), Times.Once);
     }
 
+    [Fact]
+    public async Task JoinRoomTest()
+    {
+        
+    }
+
     
 }
