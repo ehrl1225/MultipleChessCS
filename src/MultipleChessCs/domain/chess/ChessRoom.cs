@@ -1,29 +1,21 @@
 namespace MultipleChessCs.Domain.Chess;
 using Vote;
 using Enum;
+using Board;
 
 
-public class ChessRoom
+public class ChessRoom(string roomId, string admin, int maxPlayers)
 {
-    public readonly string _roomId;
-    private ChessTeam currentTurn;
-    private readonly ChessBoard _chessBoard;
+    public readonly string RoomId = roomId;
+    private ChessTeam _currentTurn = ChessTeam.White;
+    private readonly ChessBoard _chessBoard = new();
     private readonly Dictionary<string, ChessPlayer> _players = [];
-    private readonly VoteManager _voteManager;
-    public int MaxPlayers { get; } = 10;
+    private readonly VoteManager _voteManager = new();
+    public int MaxPlayers { get; } = maxPlayers;
     private readonly Lock _lock = new();
-    private readonly string _admin;
+    private readonly string _admin = admin;
     private bool _isStarted = false;
-
-
-    public ChessRoom(string roomId, string admin, int maxPlayers)
-    {
-        _roomId = roomId;
-        _admin = admin;
-        MaxPlayers = maxPlayers;
-        currentTurn = ChessTeam.White;
-        _chessBoard = new ChessBoard();
-    }
+    
 
     public bool IsAdmin(string admin)
     {
@@ -45,12 +37,12 @@ public class ChessRoom
 
     public void SwitchTurn()
     {
-        if (currentTurn == ChessTeam.White)
+        if (_currentTurn == ChessTeam.White)
         {
-            currentTurn = ChessTeam.Black;
+            _currentTurn = ChessTeam.Black;
             return;
         }
-        currentTurn = ChessTeam.White;
+        _currentTurn = ChessTeam.White;
     }
 
     public bool TryJoin(string playerName)
@@ -89,7 +81,7 @@ public class ChessRoom
         while (_isStarted)
         {
             var voters = _players.Values
-                .Where(p => p.Team == currentTurn)
+                .Where(p => p.Team == _currentTurn)
                 .Select( p => p._username);
             var moveResult = await _voteManager.StartVoteAsync(voters, 60);
 

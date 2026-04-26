@@ -1,8 +1,8 @@
-namespace MultipleChessCs.Domain.Chess;
+namespace MultipleChessCs.Domain.Chess.Board;
 
 using Enum;
 
-class ChessBoard
+public class ChessBoard
 {
     private ChessPiece?[,] board;
     private ChessPiece[] pieces;

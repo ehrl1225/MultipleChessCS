@@ -1,6 +1,5 @@
 namespace MultipleChessCs.Domain.Vote;
-using Chess;
-
+using Chess.Board;
 
 
 public class MoveVote : Vote

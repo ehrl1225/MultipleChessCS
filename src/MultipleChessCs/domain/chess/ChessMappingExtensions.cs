@@ -5,6 +5,6 @@ public static class ChessMappingExtensions
 {
     public static ChessRoomDto ToDto(this ChessRoom room)
     {
-        return new(room._roomId, room.MaxPlayers);
+        return new(room.RoomId, room.MaxPlayers);
     }
 }
