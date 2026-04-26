@@ -1,10 +1,12 @@
+using MultipleChessCs.Domain.Chess.Rules;
+
 namespace MultipleChessCs.Domain.Chess;
 using Vote;
 using Enum;
 using Board;
 
 
-public class ChessRoom(string roomId, string admin, int maxPlayers)
+public class ChessRoom(string roomId, string admin, int maxPlayers, ChessRules chessRules)
 {
     public readonly string RoomId = roomId;
     private ChessTeam _currentTurn = ChessTeam.White;
@@ -15,6 +17,7 @@ public class ChessRoom(string roomId, string admin, int maxPlayers)
     private readonly Lock _lock = new();
     private readonly string _admin = admin;
     private bool _isStarted = false;
+    private readonly ChessRules _chessRules = chessRules;
     
 
     public bool IsAdmin(string admin)
@@ -89,7 +92,8 @@ public class ChessRoom(string roomId, string admin, int maxPlayers)
             {
                 _chessBoard.ExecuteMove(move.From, move.To);
             }
-
+            
+            SwitchTurn();
         }
     }
 }

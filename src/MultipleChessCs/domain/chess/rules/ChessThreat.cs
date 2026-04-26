@@ -1,4 +1,4 @@
-namespace MultipleChessCs.Domain.Chess;
+namespace MultipleChessCs.Domain.Chess.Rules;
 using Board;
 
 class ChessThreat

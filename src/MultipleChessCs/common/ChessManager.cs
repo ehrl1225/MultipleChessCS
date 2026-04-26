@@ -1,4 +1,5 @@
 namespace MultipleChessCs.Common;
+using MultipleChessCs.Domain.Chess.Rules;
 using System.Collections.Concurrent;
 using Domain.Chess;
 
@@ -6,13 +7,14 @@ using Domain.Chess;
 public class ChessManager
 {
     private readonly ConcurrentDictionary<string, ChessRoom> _rooms;
-    private readonly int _maxRoomCount;
+    private readonly int _maxRoomCount = 100;
     private int roomCount;
+    private readonly ChessRules _chessRules;
 
-    public ChessManager(int maxRoomCount = 100)
+    public ChessManager(ChessRules chessRules)
     {
         _rooms = new ConcurrentDictionary<string, ChessRoom>();
-        _maxRoomCount = maxRoomCount;
+        _chessRules = chessRules;
         roomCount = 0;
     }
     public bool CreateRoom(string admin, int maxPlayerCount)
@@ -22,7 +24,7 @@ public class ChessManager
             return false;
         }
         string roomId = Guid.NewGuid().ToString("N");
-        ChessRoom room = new(roomId, admin, maxPlayerCount);
+        ChessRoom room = new(roomId, admin, maxPlayerCount, _chessRules);
         if (_rooms.TryAdd(roomId, room))
         {
             return true;
