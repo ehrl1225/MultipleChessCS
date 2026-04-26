@@ -190,6 +190,19 @@ class ChessBoard
         return chessPiece;
     }
 
+    public void ExecuteMove(ChessLocation from, ChessLocation to)
+    {
+        ChessPiece? fromChessPiece = getByLocation(from);
+        if (fromChessPiece == null)
+        {
+            return;
+        }
+        board[from.y-1, from.x-1] = null;
+        ChessPiece? toChessPiece = getByLocation(to);
+        if (toChessPiece != null) toChessPiece.kill();
+        board[to.y-1, to.x-1] = fromChessPiece;
+    }
+
     private bool AddToLocation(
         List<ChessLocation> locations, 
         ChessLocation location,

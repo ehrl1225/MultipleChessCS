@@ -1,4 +1,5 @@
 namespace MultipleChessCs.Domain.Chess;
+using Vote;
 using Enum;
 
 
@@ -6,12 +7,13 @@ public class ChessRoom
 {
     public readonly string _roomId;
     private ChessTeam currentTurn;
-    private readonly ChessBoard chessBoard;
+    private readonly ChessBoard _chessBoard;
     private readonly Dictionary<string, ChessPlayer> _players = [];
-    public int MaxPlayers {get; private set;} = 10;
+    private readonly VoteManager _voteManager;
+    public int MaxPlayers { get; } = 10;
     private readonly Lock _lock = new();
     private readonly string _admin;
-    public bool IsStarted {get; private set;} = false;
+    private bool _isStarted = false;
 
 
     public ChessRoom(string roomId, string admin, int maxPlayers)
@@ -20,7 +22,7 @@ public class ChessRoom
         _admin = admin;
         MaxPlayers = maxPlayers;
         currentTurn = ChessTeam.White;
-        chessBoard = new ChessBoard();
+        _chessBoard = new ChessBoard();
     }
 
     public bool IsAdmin(string admin)
@@ -34,7 +36,7 @@ public class ChessRoom
         {
             lock (_lock)
             {
-                IsStarted = true;
+                _isStarted = true;
                 return true;
             }
         }
@@ -55,7 +57,7 @@ public class ChessRoom
     {
         lock (_lock)
         {
-            if (IsStarted) return false;
+            if (_isStarted) return false;
             if (_players.Count >= MaxPlayers)
             {
                 return false;
@@ -79,6 +81,23 @@ public class ChessRoom
             }
             _players.Remove(playerName);
             return true;
+        }
+    }
+
+    public async Task RunGameLoop()
+    {
+        while (_isStarted)
+        {
+            var voters = _players.Values
+                .Where(p => p.Team == currentTurn)
+                .Select( p => p._username);
+            var moveResult = await _voteManager.StartVoteAsync(voters, 60);
+
+            if (moveResult is MoveVote move)
+            {
+                _chessBoard.ExecuteMove(move.From, move.To);
+            }
+
         }
     }
 }
