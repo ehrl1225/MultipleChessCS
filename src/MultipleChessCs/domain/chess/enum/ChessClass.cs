@@ -1,4 +1,4 @@
-namespace Domain.Chess.Enum.ChessClass;
+namespace MultipleChessCs.Domain.Chess.Enum;
 
 public enum ChessClass
 {

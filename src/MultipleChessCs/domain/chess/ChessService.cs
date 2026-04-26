@@ -1,4 +1,4 @@
-namespace Chess.ChessService;
+namespace MultipleChessCs.Chess;
 
 
 public class ChessService

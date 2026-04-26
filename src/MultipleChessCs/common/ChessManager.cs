@@ -1,7 +1,6 @@
-namespace Common.ChessManager;
+namespace MultipleChessCs.Common;
 using System.Collections.Concurrent;
-using Domain.Chess.ChessRoom;
-using Microsoft.VisualBasic;
+using Domain.Chess;
 
 
 public class ChessManager

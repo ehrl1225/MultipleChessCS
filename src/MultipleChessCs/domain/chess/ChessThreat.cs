@@ -1,6 +1,4 @@
-namespace Domain.Chess.ChessThreat;
-using Domain.Chess.ChessPiece;
-using Domain.Chess.ChessLocation;
+namespace MultipleChessCs.Domain.Chess;
 
 class ChessThreat
 {

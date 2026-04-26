@@ -1,4 +1,4 @@
-namespace Domain.Chess.ChessLocation;
+namespace MultipleChessCs.Domain.Chess;
 
 class ChessLocation
 {

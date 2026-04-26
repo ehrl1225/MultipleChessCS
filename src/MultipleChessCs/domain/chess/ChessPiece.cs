@@ -1,7 +1,5 @@
-namespace Domain.Chess.ChessPiece;
-using Domain.Chess.Enum.ChessTeam;
-using Domain.Chess.ChessLocation;
-using Domain.Chess.Enum.ChessClass;
+namespace MultipleChessCs.Domain.Chess;
+using Enum;
 
 
 

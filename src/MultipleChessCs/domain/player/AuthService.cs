@@ -1,19 +1,14 @@
+namespace MultipleChessCs.Domain.Player;
 using Microsoft.AspNetCore.Identity;
+using Common;
 
-namespace Domain.Player.AuthService;
 using Domain.Player;
 using Microsoft.EntityFrameworkCore;
 
-public class AuthService
+public class AuthService(AppDbContext db, IPasswordHasher<Player> hasher)
 {
-    private readonly AppDbContext _db;
-    private readonly IPasswordHasher<Player> _hasher;
-
-    public AuthService(AppDbContext db, IPasswordHasher<Player> hasher)
-    {
-        _db = db;
-        _hasher = hasher;
-    }
+    private readonly AppDbContext _db = db;
+    private readonly IPasswordHasher<Player> _hasher = hasher;
 
     public async Task Register(string username, string password)
     {

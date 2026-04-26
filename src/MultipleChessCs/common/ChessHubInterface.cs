@@ -1,6 +1,6 @@
-using Domain.Chess.ChessDto;
+namespace MultipleChessCs.Common;
+using Domain.Chess;
 
-namespace Common.ChessHubInterface;
 
 public interface ChessHubInterface
 {
