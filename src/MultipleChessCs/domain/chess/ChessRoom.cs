@@ -1,7 +1,5 @@
-namespace Domain.Chess.ChessRoom;
-using Domain.Chess.ChessBoard;
-using Domain.Chess.Enum.ChessTeam;
-using Domain.Chess.ChessPlayer;
+namespace MultipleChessCs.Domain.Chess;
+using Enum;
 
 
 public class ChessRoom

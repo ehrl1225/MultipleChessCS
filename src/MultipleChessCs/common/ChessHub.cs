@@ -1,25 +1,16 @@
-namespace Common.ChessHub;
+namespace MultipleChessCs.Common;
 
-using System.Net.WebSockets;
-using Common.ChatTarget;
-using Common.ChessHubInterface;
-using Common.ChessManager;
-using Domain.Chess.Enum.ChessTeam;
-using Domain.Chess.ChessRoom;
-using Domain.Player.AuthService;
+
+using Domain.Chess.Enum;
+using Domain.Chess;
+using Domain.Player;
 using Microsoft.AspNetCore.SignalR;
-using Domain.Chess.ChessMappingExtensions;
 
 
-public class ChessHub : Hub<ChessHubInterface>
+public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<ChessHubInterface>
 {
-    private readonly AuthService _authService;
-    private readonly ChessManager _chessManager;
-    public ChessHub(AuthService authService,ChessManager chessManager)
-    {
-        _authService = authService;
-        _chessManager = chessManager;
-    }
+    private readonly AuthService _authService = authService;
+    private readonly ChessManager _chessManager = chessManager;
 
     // user
 

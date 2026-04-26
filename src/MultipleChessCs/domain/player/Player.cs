@@ -1,5 +1,5 @@
+namespace MultipleChessCs.Domain.Player;
 using System.ComponentModel.DataAnnotations;
-namespace Domain.Player;
 
 public class Player
 {

@@ -1,3 +1,4 @@
+namespace MultipleChessCs.Common;
 using Microsoft.EntityFrameworkCore;
 using Domain.Player;
 

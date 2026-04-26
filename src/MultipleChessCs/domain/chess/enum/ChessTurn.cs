@@ -1,4 +1,4 @@
-namespace Domain.Chess.Enum.ChessTurn;
+namespace MultipleChessCs.Domain.Chess.Enum;
 
 public enum ChessTurn
 {

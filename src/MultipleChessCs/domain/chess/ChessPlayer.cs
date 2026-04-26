@@ -1,6 +1,6 @@
-using Domain.Chess.Enum.ChessTeam;
+namespace MultipleChessCs.Domain.Chess;
+using Enum;
 
-namespace Domain.Chess.ChessPlayer;
 
 
 class ChessPlayer(string username)

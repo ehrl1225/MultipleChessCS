@@ -1,4 +1,4 @@
-namespace Common.ChatTarget;
+namespace MultipleChessCs.Common;
 
 public enum ChatTarget
 {

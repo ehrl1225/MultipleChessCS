@@ -1,3 +1,3 @@
-namespace Domain.Chess.ChessDto;
+namespace MultipleChessCs.Domain.Chess;
 
 public record ChessRoomDto(string roomId, int maxPlayerCount);

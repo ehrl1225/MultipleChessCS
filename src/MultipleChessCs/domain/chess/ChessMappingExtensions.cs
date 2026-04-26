@@ -1,7 +1,5 @@
-namespace Domain.Chess.ChessMappingExtensions;
+namespace MultipleChessCs.Domain.Chess;
 
-using Domain.Chess.ChessDto;
-using Domain.Chess.ChessRoom;
 
 public static class ChessMappingExtensions
 {

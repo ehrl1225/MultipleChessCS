@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿namespace MultipleChessCs;
+using Microsoft.AspNetCore.Identity;
 using Domain.Player;
-using Domain.Player.AuthService;
-using Common.ChessManager;
-using Common.ChessHub;
+using Common;
 using dotenv.net;
 using Microsoft.EntityFrameworkCore;
 
-namespace Main;
 
 class Program
 {

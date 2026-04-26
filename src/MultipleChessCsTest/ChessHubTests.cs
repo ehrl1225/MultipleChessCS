@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using Domain.Player;
+using MultipleChessCs.Domain.Player;
 
 
 namespace MultipleChessCsTest;
