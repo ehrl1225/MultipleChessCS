@@ -1,3 +1,5 @@
+using MultipleChessCs.Domain.Chess.Rules;
+
 namespace MultipleChessCsTest;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +36,8 @@ public abstract class HubTestBase : IDisposable
 
         var hasher = new PasswordHasher<Player>();
         var authService = new AuthService(Db, hasher);
-        var chessManager = new ChessManager();
+        var chessRules = new ChessRules();
+        var chessManager = new ChessManager(chessRules);
 
         Hub = new ChessHub(authService, chessManager);
         

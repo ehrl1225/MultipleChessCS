@@ -1,4 +1,5 @@
 ﻿namespace MultipleChessCs;
+using MultipleChessCs.Domain.Chess.Rules;
 using Microsoft.AspNetCore.Identity;
 using Domain.Player;
 using Common;
@@ -20,6 +21,7 @@ class Program
             options.UseNpgsql(connectionString));
         builder.Services.AddScoped<IPasswordHasher<Player>, PasswordHasher<Player>>();
         builder.Services.AddScoped<AuthService>();
+        builder.Services.AddSingleton<ChessRules>();
         builder.Services.AddSingleton<ChessManager>();
         
         Console.WriteLine("빌드 시작");

@@ -1,9 +1,9 @@
-namespace MultipleChessCs.Domain.Chess;
+namespace MultipleChessCs.Domain.Chess.Board;
 using Enum;
 
 
 
-class ChessPiece
+public class ChessPiece
 {
     private readonly int index;
     private readonly ChessLocation initLocation;

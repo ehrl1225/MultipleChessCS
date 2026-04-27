@@ -1,6 +1,6 @@
-namespace MultipleChessCs.Domain.Chess;
+namespace MultipleChessCs.Domain.Chess.Board;
 
-class ChessLocation
+public class ChessLocation
 {
     public int x {get; private set;}
     public int y {get; private set;}
