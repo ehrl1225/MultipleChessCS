@@ -51,7 +51,7 @@ Rectangle {
             }
 
             Text {
-                text: LoginViewBridge.errorMessage
+                text: authBridge.errorMessage
                 color: "#e74c3c"
                 visible: text !== ""
                 Layout.alignment: Qt.AlignHCenter
@@ -73,7 +73,7 @@ Rectangle {
                     color: parent.pressed ? "#2980b9" : "#3498db"
                     radius: 5
                 }
-                onClicked: loginViewBridge.login(userField.text, passField.text)
+                onClicked: authBridge.login(userField.text, passField.text)
             }
 
             Text {
@@ -83,7 +83,9 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: console.log("회원가입 클릭")
+                    onClicked: {
+                        mainStack.push("RegisterView.qml")
+                    }
                 }
             }
         }

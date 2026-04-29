@@ -6,7 +6,7 @@ from chess.chess_board import ChessBoard
 from chess.chess_piece import ChessPiece
 
 
-class ChessBridge(QObject):
+class ChessBoardBridge(QObject):
     boardUpdated = pyqtSignal()
 
     def __init__(self, chess_board: ChessBoard):

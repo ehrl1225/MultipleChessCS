@@ -5,17 +5,20 @@ import QtQuick.Controls
 ApplicationWindow {
     id: window
     visible: true
-    width: 800
-    height: 600
+    width: 900
+    height: 700
     title: qsTr("MultipleChess")
 
     StackView {
-        id: stackView
+        id: mainStack
         anchors.fill: parent
-        initialItem: "LoginView.qml"
+        initialItem: LoginView {}
     }
 
-    function changeView(viewName) {
-        stackView.replace(viewName)
+    Connections {
+        target: authBridge
+        function onLoginSuccess() {
+            mainStack.replace("LobbyView.qml")
+        }
     }
 }
