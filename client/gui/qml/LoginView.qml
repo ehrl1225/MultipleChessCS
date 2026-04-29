@@ -27,9 +27,11 @@ Rectangle {
 
             TextField {
                 id: userField
-                placeholderText: "아 이 디"
+                placeholderText: "아이디"
                 Layout.fillWidth: true
                 font.pixelSize: 14
+                color: "black"
+                placeholderTextColor: "black"
                 background: Rectangle {
                     implicitHeight: 45
                     border.color: userField.activeFocus ? "#3498db" : "#bdc3c7"
@@ -39,10 +41,12 @@ Rectangle {
 
             TextField {
                 id: passField
-                placeholderText: "비 밀 번 호"
+                placeholderText: "비밀번호"
                 echoMode: TextField.Password
                 Layout.fillWidth: true
                 font.pixelSize: 14
+                color: "black"
+                placeholderTextColor: "black"
                 background: Rectangle {
                     implicitHeight: 45
                     border.color: passField.activeFocus ? "#3498db" : "#bdc3c7"
@@ -79,7 +83,7 @@ Rectangle {
             Text {
                 text: "계정이 없으신가요? 회원가입"
                 font.pixelSize: 12
-                color: "#7f8c8d"
+                color: "black"
                 Layout.alignment: Qt.AlignHCenter
                 MouseArea {
                     anchors.fill: parent

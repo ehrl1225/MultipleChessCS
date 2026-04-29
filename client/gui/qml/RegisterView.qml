@@ -8,7 +8,7 @@ Rectangle {
 
     Rectangle {
         width: 350
-        height: 500
+        height: 450
         anchors.centerIn: parent
         radius: 15
         color: "white"
@@ -16,39 +16,74 @@ Rectangle {
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 40
-            spacing: 15
+            spacing: 20
             Text {
                 text: "회원가입"
                 font.pixelSize: 24
                 font.bold: true
                 Layout.alignment: Qt.AlignHCenter
+                color: "#2c3e50"
             }
 
             TextField {
-                id: regId
+                id: regIdField
                 placeholderText: "아이디"
                 Layout.fillWidth: true
+                font.pixelSize: 14
+                color: "black"
+                placeholderTextColor: "black"
+                background: Rectangle {
+                    implicitHeight: 45
+                    border.color: regIdField.activeFocus ? "#3498db" : "#bdc3c7"
+                    radius: 5
+                }
             }
 
             TextField {
-                id: regPw
+                id: regPwField
                 placeholderText: "비밀번호"
                 echoMode: TextField.Password
                 Layout.fillWidth: true
+                font.pixelSize: 14
+                color: "black"
+                placeholderTextColor: "black"
+                background: Rectangle {
+                    implicitHeight: 45
+                    border.color: regPwField.activeFocus ? "#3498db" : "#bdc3c7"
+                    radius: 5
+                }
             }
 
             Button {
                 text: "가입하기"
                 Layout.fillWidth: true
                 Layout.preferredHeight: 45
-                onClicked: authBridge.register(regid.text, regPw.text, regNick.text)
+                contentItem: Text {
+                    text: parent.text
+                    color: "white"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.bold: true
+                }
+
+                background: Rectangle {
+                    color: parent.pressed ? "#2980b9" : "#3498db"
+                    radius: 5
+                }
+                onClicked: authBridge.register(regIdField.text, regPwField.text)
             }
 
-            Button {
+            Text {
                 text: "취소"
-                flat: true
+                font.pixelSize: 12
+                color: "black"
                 Layout.alignment: Qt.AlignHCenter
-                onClicked: mainStack.pop()
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        mainStack.pop()
+                    }
+                }
             }
         }
     }
