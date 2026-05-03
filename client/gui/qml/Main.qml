@@ -20,5 +20,8 @@ ApplicationWindow {
         function onLoginSuccess() {
             mainStack.replace("LobbyView.qml")
         }
+        function onRegisterSuccess() {
+            mainStack.pop()
+        }
     }
 }

@@ -7,11 +7,13 @@ from client.signalr_client import SignalRClient
 
 class AuthBridge(QObject):
     loginSuccess = pyqtSignal()
+    registerSuccess = pyqtSignal()
     errorOccurred = pyqtSignal(str)
 
     def __init__(self, signalr_client:IChessHub):
         super().__init__()
         self.signalr_client = signalr_client
+        self.add_handler()
         self._error_message = ""
 
     def add_handler(self):
@@ -21,6 +23,11 @@ class AuthBridge(QObject):
     def onRegisterResponse(self, args):
         success = args[0]
         message = args[1]
+        if success:
+            self.registerSuccess.emit()
+        else:
+            self._error_message = message
+            self.errorOccurred.emit(message)
 
 
     def onLoginResponse(self, args):
@@ -39,9 +46,11 @@ class AuthBridge(QObject):
     @pyqtSlot(str, str)
     def login(self, username, password):
         self.signalr_client.request_login(username, password)
+        print("로그인 시도")
         # TODO 인증 로직 구현
 
-    @pyqtSlot(str, str, str)
+    @pyqtSlot(str, str)
     def register(self, username, password):
-        pass
+        self.signalr_client.request_register(username, password)
+        print("회원가입 시도")
         # TODO 회원가입 구현
