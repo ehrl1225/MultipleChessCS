@@ -96,19 +96,40 @@ Rectangle {
         anchors.centerIn: parent
 
         Column {
-            spacing: 10
+            spacing: 15
             width: 250
+
+            Label {
+                text: "방 제목"
+                font.bold: true
+            }
+
             TextField {
                 id: roomNameInput
                 width: parent.width
                 placeholderText: "방 제목을 입력하세요"
             }
+
+            Label {
+                text: "최대 플레이어 수"
+                font.bold: true
+            }
+
+            SpinBox {
+                id: maxPlayersInput
+                width: parent.width
+                from: 2
+                to: 4
+                value: 4
+                editable: true
+            }
         }
 
         onAccepted: {
             if (roomNameInput.text !== "") {
-                lobbyBridge.createRoom(roomNameInput.text)
+                lobbyBridge.createRoom(roomNameInput.text, maxPlayersInput.value)
                 roomNameInput.text = ""
+                maxPlayersInput.value = 4
             }
         }
     }

@@ -1,8 +1,8 @@
 from PyQt6.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
 from client.chess_hub_interface import IChessHub
-from client.request_enum import RequestEnum
 from client.response_enum import ResponseEnum
+
 
 class LobbyBridge(QObject):
     roomListChanged = pyqtSignal(list)
@@ -10,7 +10,7 @@ class LobbyBridge(QObject):
     
     def __init__(self, signalr_client: IChessHub):
         super().__init__()
-        self.signalr_client = signalr_client
+        self.signalr_client:IChessHub = signalr_client
         self.add_handler()
         self._rooms = []
 
@@ -27,10 +27,10 @@ class LobbyBridge(QObject):
     def refreshRoomList(self):
         self.signalr_client.get_room_list()
 
-    @pyqtSlot(str)
-    def createRoom(self, room_name):
-        self.signalr_client.send(RequestEnum.RequestCreateRoom.value, [room_name])
+    @pyqtSlot(str, int)
+    def createRoom(self, room_name: str, max_player_count: int):
+        self.signalr_client.request_create_room(room_name, max_player_count)
 
     @pyqtSlot(int)
     def joinRoom(self, room_id):
-        self.signalr_client.send(RequestEnum.RequestJoinRoom.value, [room_id])
+        self.signalr_client.request_join_room(room_id)

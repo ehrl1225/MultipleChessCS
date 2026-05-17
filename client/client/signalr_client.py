@@ -55,8 +55,8 @@ class SignalRClient(IChessHub):
     def request_register(self, username: str, password: str):
         self.send(RequestEnum.RequestRegister.value, [username, password])
 
-    def request_create_room(self, max_player_count: int):
-        self.send(RequestEnum.RequestCreateRoom.value, [max_player_count])
+    def request_create_room(self, room_name: str, max_player_count: int):
+        self.send(RequestEnum.RequestCreateRoom.value, [room_name, max_player_count])
 
     def request_join_room(self, room_id: str):
         self.send(RequestEnum.RequestJoinRoom.value, [room_id])
