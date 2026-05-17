@@ -34,7 +34,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
         {
             await Clients.Caller.LoginResponse(true, "성공");
             Context.Items["Username"] = username;
-            return;
+            return; 
         }
         await Clients.Caller.LoginResponse(false, "실패");
     }
@@ -46,12 +46,12 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
 
     // room
 
-    public async Task RequestCreateRoom(int maxPlayerCount)
+    public async Task RequestCreateRoom(string roomName, int maxPlayerCount)
     {
         if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
         {
             if (Context.Items.TryGetValue("RoomId", out object? roomIdObj) && roomIdObj is string roomId) return;
-            if (_chessManager.CreateRoom(username, maxPlayerCount))
+            if (_chessManager.CreateRoom(username, roomName, maxPlayerCount))
             {
                 await Clients.Caller.Alert("방이 생성되었습니다.");
             }
@@ -120,7 +120,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
             Context.Items["TeamName"] = teamName;
             return;
         }
-        await Clients.Caller.CallerMessage("로그인을 해야합니다.");
+        await Clients.Caller.Alert("로그인을 해야합니다.");
     }
 
     // chat

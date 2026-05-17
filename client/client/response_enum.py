@@ -4,5 +4,7 @@ class ResponseEnum(Enum):
     RegisterResponse = "RegisterResponse"
     LoginResponse = "LoginResponse"
     GroupNotice = "GroupNotice"
-    CallerMessage = "CallerMessage"
     SendMessage = "SendMessage"
+    Pong = "Pong"
+    Alert = "Alert"
+    ChessRoomListResponse = "ChessRoomListResponse"

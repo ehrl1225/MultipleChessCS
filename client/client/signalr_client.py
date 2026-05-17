@@ -1,8 +1,14 @@
 import logging
+from typing import Callable
+
 from signalrcore.hub_connection_builder import HubConnectionBuilder
 from signalrcore.hub.base_hub_connection import BaseHubConnection
 
-class SignalRClient:
+from client.chess_hub_interface import IChessHub
+from client.request_enum import RequestEnum
+
+
+class SignalRClient(IChessHub):
 
     def __init__(self, url):
         self.url = url
@@ -18,16 +24,46 @@ class SignalRClient:
             })
             .build()
         )
-        self.connection.on_open(lambda : print("Connection opened"))
-        self.connection.on_close(lambda : print("Connection closed"))
+        self.is_open = False
+        self.connection.on_open(self.onOpen)
+        self.connection.on_close(self.onClose)
 
         self.on_register_response = None
         self.on_login_response = None
 
-    def _setup_handler(self):
-        self.connection.on("Login", self._handle_login_response)
+    def onOpen(self):
+        self.is_open = True
+        print("Connection opened")
 
-    def _handle_login_response(self, args):
-        pass
+    def onClose(self):
+        self.is_open = False
+        print("Connection closed")
 
+    def addHandler(self, event_name: str, handler: Callable):
+        self.connection.on(event_name, handler)
+
+    def connect(self):
+        self.connection.start()
+
+    def send(self, method: str, args: list):
+        if self.is_open:
+            self.connection.send(method, args)
+
+    def request_login(self, username, password):
+        self.send(RequestEnum.RequestLogin.value, [username, password])
+
+    def request_register(self, username: str, password: str):
+        self.send(RequestEnum.RequestRegister.value, [username, password])
+
+    def request_create_room(self, room_name: str, max_player_count: int):
+        self.send(RequestEnum.RequestCreateRoom.value, [room_name, max_player_count])
+
+    def request_join_room(self, room_id: str):
+        self.send(RequestEnum.RequestJoinRoom.value, [room_id])
+
+    def request_delete_room(self, room_id: str):
+        self.send(RequestEnum.RequestDeleteRoom.value, [room_id])
+
+    def get_room_list(self):
+        self.send(RequestEnum.GetRoomList.value, [])
 
