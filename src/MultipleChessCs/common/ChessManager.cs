@@ -17,14 +17,14 @@ public class ChessManager
         _chessRules = chessRules;
         roomCount = 0;
     }
-    public bool CreateRoom(string admin, int maxPlayerCount)
+    public bool CreateRoom(string admin, string roomName, int maxPlayerCount)
     {
         if (roomCount == _maxRoomCount)
         {
             return false;
         }
         string roomId = Guid.NewGuid().ToString("N");
-        ChessRoom room = new(roomId, admin, maxPlayerCount, _chessRules);
+        ChessRoom room = new(roomId, roomName, admin, maxPlayerCount, _chessRules);
         if (_rooms.TryAdd(roomId, room))
         {
             return true;

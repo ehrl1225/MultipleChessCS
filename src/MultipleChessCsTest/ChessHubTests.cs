@@ -48,14 +48,14 @@ public class ChessHubTests : HubTestBase
         string password = "password123";
         await CreateUser(username, password);
         await Hub.RequestLogin(username, password);
-        await Hub.RequestCreateRoom(10);
+        await Hub.RequestCreateRoom("test",10);
         MockCaller.Verify( c => c.Alert("방이 생성되었습니다."), Times.Once);
     }
 
     [Fact]
     public async Task CreateRoomTestFail()
     {
-        await Hub.RequestCreateRoom(10);
+        await Hub.RequestCreateRoom("test", 10);
         MockCaller.Verify( c => c.Alert("방이 생성되지 않았습니다."), Times.Once);
     }
 

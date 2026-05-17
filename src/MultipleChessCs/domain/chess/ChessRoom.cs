@@ -6,9 +6,10 @@ using Enum;
 using Board;
 
 
-public class ChessRoom(string roomId, string admin, int maxPlayers, ChessRules chessRules)
+public class ChessRoom(string roomId,string roomName,  string admin, int maxPlayers, ChessRules chessRules)
 {
     public readonly string RoomId = roomId;
+    public readonly string RoomName = roomName;
     private ChessTeam _currentTurn = ChessTeam.White;
     private readonly ChessBoard _chessBoard = new();
     private readonly Dictionary<string, ChessPlayer> _players = [];
@@ -18,7 +19,11 @@ public class ChessRoom(string roomId, string admin, int maxPlayers, ChessRules c
     private readonly string _admin = admin;
     private bool _isStarted = false;
     private readonly ChessRules _chessRules = chessRules;
-    
+
+    public int GetPlayerCount()
+    {
+        return _players.Count;
+    }
 
     public bool IsAdmin(string admin)
     {

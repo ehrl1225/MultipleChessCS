@@ -46,12 +46,12 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
 
     // room
 
-    public async Task RequestCreateRoom(int maxPlayerCount)
+    public async Task RequestCreateRoom(string roomName, int maxPlayerCount)
     {
         if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
         {
             if (Context.Items.TryGetValue("RoomId", out object? roomIdObj) && roomIdObj is string roomId) return;
-            if (_chessManager.CreateRoom(username, maxPlayerCount))
+            if (_chessManager.CreateRoom(username, roomName, maxPlayerCount))
             {
                 await Clients.Caller.Alert("방이 생성되었습니다.");
             }
