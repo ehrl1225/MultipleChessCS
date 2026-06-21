@@ -25,6 +25,10 @@ public class ChessManager
         }
         string roomId = Guid.NewGuid().ToString("N");
         ChessRoom room = new(roomId, roomName, admin, maxPlayerCount, _chessRules);
+        if (!room.TryJoin(admin))
+        {
+            return false;
+        }
         if (_rooms.TryAdd(roomId, room))
         {
             return true;
