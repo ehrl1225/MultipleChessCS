@@ -25,5 +25,11 @@ class IChessHub(metaclass=ABCMeta):
     @abstractmethod
     def get_room_list(self): pass
 
+    @abstractmethod
+    def join_team(self, room_id: str, team_name: str): pass
+
+    @abstractmethod
+    def leave_team(self, room_id: str): pass
+
 
 

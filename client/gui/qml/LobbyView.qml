@@ -74,7 +74,7 @@ Rectangle {
                         Item { Layout.fillWidth: true }
 
                         Text {
-                            text: modelData.playerCount + " / 4"
+                            text: modelData.currentPlayerCount + " / 4"
                             font.pixelSize: 16
                             color: "#4a90e2"
                         }

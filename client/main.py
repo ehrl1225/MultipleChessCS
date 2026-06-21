@@ -7,6 +7,7 @@ from chess.chess_board import ChessBoard
 from gui.bridge import AuthBridge, ChessBoardBridge
 from client.signalr_client import SignalRClient
 from gui.bridge.lobby_bridge import LobbyBridge
+from gui.bridge.room_bridge import RoomBridge
 
 
 def main():
@@ -18,9 +19,11 @@ def main():
     bridge = ChessBoardBridge(chessBoard)
     auth_bridge = AuthBridge(signalr_client)
     lobby_bridge = LobbyBridge(signalr_client)
+    room_bridge = RoomBridge(signalr_client)
     engine.rootContext().setContextProperty("bridge", bridge)
     engine.rootContext().setContextProperty("authBridge", auth_bridge)
     engine.rootContext().setContextProperty("lobbyBridge", lobby_bridge)
+    engine.rootContext().setContextProperty("roomBridge", room_bridge)
 
     engine.load("gui/qml/Main.qml")
     signalr_client.connect()

@@ -1,5 +1,6 @@
 from PyQt6.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
+from client.HubAction import HubAction
 from client.chess_hub_interface import IChessHub
 from client.response_enum import ResponseEnum
 from client.signalr_client import SignalRClient
@@ -17,27 +18,22 @@ class AuthBridge(QObject):
         self._error_message = ""
 
     def add_handler(self):
-        self.signalr_client.addHandler(ResponseEnum.RegisterResponse.value, self.onRegisterResponse)
-        self.signalr_client.addHandler(ResponseEnum.LoginResponse.value, self.onLoginResponse)
+        self.signalr_client.addHandler(ResponseEnum.HubResponse, self.onHubResponse)
 
-    def onRegisterResponse(self, args):
-        success = args[0]
-        message = args[1]
-        if success:
-            self.registerSuccess.emit()
-        else:
-            self._error_message = message
-            self.errorOccurred.emit(message)
+    def onHubResponse(self, args):
+        hub_action: int = args[0]
+        success: bool = args[1]
+        msg: str = args[2]
+        if not success:
+            self._error_message = msg
+            self.errorOccurred.emit(msg)
+            return
+        match hub_action:
+            case HubAction.Register:
+                self.registerSuccess.emit()
+            case HubAction.Login:
+                self.loginSuccess.emit()
 
-
-    def onLoginResponse(self, args):
-        success: bool = args[0]
-        message: str = args[1]
-        if success:
-            self.loginSuccess.emit()
-        else:
-            self._error_message = message
-            self.errorOccurred.emit(message)
 
     @pyqtProperty(str, notify=errorOccurred)
     def errorMessage(self):
@@ -45,12 +41,10 @@ class AuthBridge(QObject):
 
     @pyqtSlot(str, str)
     def login(self, username, password):
-        self.signalr_client.request_login(username, password)
         print("로그인 시도")
-        # TODO 인증 로직 구현
+        self.signalr_client.request_login(username, password)
 
     @pyqtSlot(str, str)
     def register(self, username, password):
-        self.signalr_client.request_register(username, password)
         print("회원가입 시도")
-        # TODO 회원가입 구현
+        self.signalr_client.request_register(username, password)

@@ -67,3 +67,10 @@ class SignalRClient(IChessHub):
     def get_room_list(self):
         self.send(RequestEnum.GetRoomList.value, [])
 
+    def join_team(self, room_id: str, team_name: str):
+        self.send(RequestEnum.JoinTeam.value, [room_id, team_name])
+
+    def leave_team(self, room_id: str):
+        self.send(RequestEnum.LeaveTeam.value, [room_id])
+
+
