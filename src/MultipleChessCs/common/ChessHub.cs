@@ -67,6 +67,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
             ChessRoom? room = _chessManager.GetByRoomId(roomId);
             if (room == null)
             {
+                await Clients.Caller.HubResponse(HubAction.JoinRoom.ToInt(), false, "방에 접속 실패했습니다.");
                 return;
             }
             bool result = room.TryJoin(username);

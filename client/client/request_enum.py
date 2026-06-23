@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import StrEnum
 
-class RequestEnum(Enum):
+class RequestEnum(StrEnum):
     # auth
     RequestLogin = "RequestLogin"
     RequestRegister = "RequestRegister"

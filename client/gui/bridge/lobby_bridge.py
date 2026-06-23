@@ -48,7 +48,7 @@ class LobbyBridge(QObject):
     def createRoom(self, room_name: str, max_player_count: int):
         self.signalr_client.request_create_room(room_name, max_player_count)
 
-    @pyqtSlot(int)
+    @pyqtSlot(str)
     def joinRoom(self, room_id):
         self.signalr_client.request_join_room(room_id)
 

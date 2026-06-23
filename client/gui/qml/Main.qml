@@ -31,5 +31,9 @@ ApplicationWindow {
         function onCreateRoomSuccess() {
             mainStack.push("ChessRoomView.qml")
         }
+
+        function onJoinRoomSuccess() {
+            mainStack.push("ChessRoomView.qml")
+        }
     }
 }
