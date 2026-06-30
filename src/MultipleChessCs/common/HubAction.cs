@@ -8,6 +8,9 @@ public enum HubAction
     JoinRoom,
     DeleteRoom,
     LeaveRoom,
+    GetRoomList,
     JoinTeam,
     LeaveTeam,
+    SendChat,
+    StartGame,
 }

@@ -14,7 +14,38 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
 {
     private readonly AuthService _authService = authService;
     private readonly ChessManager _chessManager = chessManager;
+    private string? Username => Context.Items.TryGetValue("Username", out var u) && u is string s ? s : null;
+    private string? RoomId => Context.Items.TryGetValue("RoomId", out var r) && r is string s ? s : null;
+    private string? TeamName => Context.Items.TryGetValue("TeamName", out var t) && t is string s ? s : null;
 
+    // util
+    private async Task<string?> CheckLogin(HubAction action)
+    {
+        var username = Username;
+        if (username == null)
+        {
+            await Clients.Caller.HubResponse(action.ToInt(), false, "로그인을 해야합니다.");
+        }
+        return username;
+    }
+
+    private async Task<string?> CheckRoom(HubAction action)
+    {
+        var roomId = RoomId;
+        if (roomId == null) 
+            await Clients.Caller.HubResponse(action.ToInt(), false, "방에 접속해야합니다.");
+        
+        return roomId;
+    }
+
+    private async Task<string?> CheckTeam(HubAction action)
+    {
+        var teamName = TeamName;
+        if (teamName == null)
+            await Clients.Caller.HubResponse(action.ToInt(), false, "팀에 접속해야합니다.");
+        return teamName;
+    }
+    
     // user
 
     public async Task RequestRegister(string username, string password)
@@ -33,7 +64,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
     public async Task RequestLogin(string username, string password)
     {
         bool result = await _authService.VerifyLogin(username, password);
-        if (result == true)
+        if (result)
         {
             await Clients.Caller.HubResponse(HubAction.Login.ToInt(), true, "로그인 성공");
             Context.Items["Username"] = username;
@@ -47,162 +78,150 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
 
     public async Task RequestCreateRoom(string roomName, int maxPlayerCount)
     {
-        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
+        var username = await CheckLogin(HubAction.CreateRoom);
+        var roomId = RoomId;
+        if (username == null) return;
+
+        if (roomId != null)
         {
-            if (Context.Items.TryGetValue("RoomId", out object? roomIdObj) && roomIdObj is string roomId) return;
-            if (_chessManager.CreateRoom(username, roomName, maxPlayerCount))
-            {
-                await Clients.Caller.HubResponse(HubAction.CreateRoom.ToInt(), true, "방이 생성되었습니다.");
-            }
+            await Clients.Caller.HubResponse(HubAction.CreateRoom.ToInt(), false, "이미 방에 접속해있습니다.");
             return;
         }
 
-        await Clients.Caller.HubResponse(HubAction.CreateRoom.ToInt(), false, "방이 생성되지 않았습니다.");
+        if (_chessManager.CreateRoom(username, roomName, maxPlayerCount))
+        {
+            await Clients.Caller.HubResponse(HubAction.CreateRoom.ToInt(), true, "방이 생성되었습니다.");
+            return;
+        }
+
+        await Clients.Caller.HubResponse(HubAction.CreateRoom.ToInt(), false, "방을 생성하는데 실패했습니다.");
     }
 
     public async Task RequestJoinRoom(string roomId)
     {
-        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
+        var username = await CheckLogin(HubAction.JoinRoom);
+        if (username == null) return;
+
+        ChessRoom? room = _chessManager.GetByRoomId(roomId);
+        if (room == null)
         {
-            ChessRoom? room = _chessManager.GetByRoomId(roomId);
-            if (room == null)
-            {
-                await Clients.Caller.HubResponse(HubAction.JoinRoom.ToInt(), false, "방에 접속 실패했습니다.");
-                return;
-            }
-            bool result = room.TryJoin(username);
-            if (result)
-            {
-                await Clients.Caller.HubResponse(HubAction.JoinRoom.ToInt(), true, "방에 접속 성공했습니다.");
-                return;
-            }
+            await Clients.Caller.HubResponse(HubAction.JoinRoom.ToInt(), false, "방에 접속 실패했습니다.");
+            return;
+        }
+        bool result = room.TryJoin(username);
+        if (result)
+        {
+            await Clients.Caller.HubResponse(HubAction.JoinRoom.ToInt(), true, "방에 접속 성공했습니다.");
+            return;
         }
         await Clients.Caller.HubResponse(HubAction.JoinRoom.ToInt(), false, "방에 접속 실패했습니다.");
     }
 
     public async Task RequestDeleteRoom(string roomId)
     {
-        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
+        var username = await CheckLogin(HubAction.DeleteRoom);
+        if (username == null) return;
+        
+        bool result = _chessManager.DeleteRoom(roomId, username);
+        if (result)
         {
-            bool result = _chessManager.DeleteRoom(roomId, username);
-            if (result)
-            {
-                await Clients.Caller.HubResponse(HubAction.DeleteRoom.ToInt(), true, "방을 삭제했습니다.");
-                return;
-            }
+            await Clients.Caller.HubResponse(HubAction.DeleteRoom.ToInt(), true, "방을 삭제했습니다.");
+            return;
         }
         await Clients.Caller.HubResponse(HubAction.DeleteRoom.ToInt(), false, "방 삭제 실패했습니다.");
     }
 
     public async Task RequestLeaveRoom(string roomId)
     {
-        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
+        var username = await CheckLogin(HubAction.LeaveRoom);
+        if (username == null) return;
+        
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
+        var result = Context.Items.Remove("RoomId");
+        if (!result)
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
-            Context.Items.Remove("RoomId");
-            await Clients.Caller.HubResponse(HubAction.LeaveRoom.ToInt(), true, "방을 나왔습니다.");
+            await Clients.Caller.HubResponse(HubAction.LeaveRoom.ToInt(), false, "방을 나오는데 실패했습니다.");
             return;
         }
-
-        await Clients.Caller.HubResponse(HubAction.LeaveRoom.ToInt(), false, "방을 나오는데 실패했습니다.");
+        await Clients.Caller.HubResponse(HubAction.LeaveRoom.ToInt(), true, "방을 나왔습니다.");
     }
 
     public async Task GetRoomList()
     {
-        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
-        {
-            var chessRooms = _chessManager.GetChessRooms().Select(i => i.ToDto()).ToArray();
-            await Clients.Caller.ChessRoomListResponse(chessRooms);
-            return;
-        }
-        await Clients.Caller.Alert("로그인을 해야합니다.");
+        var username = await CheckLogin(HubAction.GetRoomList);
+        if (username == null) return;
+        var chessRooms = _chessManager.GetChessRooms().Select(i => i.ToDto()).ToArray();
+        await Clients.Caller.HubResponse(HubAction.GetRoomList.ToInt(), true, "방을 가져오는데 성공했습니다.");
+        await Clients.Caller.ChessRoomListResponse(chessRooms);
     }
 
     public async Task StartRoomGame(string roomId)
     {
-        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
-        {
-            _chessManager.StartGame(roomId, username);
-            await Clients.Group(roomId).GroupNotice("게임이 시작했습니다.");
-            return;
-        }
+        var username = await CheckLogin(HubAction.StartGame);
+        if (username == null) return;
+        _chessManager.StartGame(roomId, username);
+        await Clients.Group(roomId).GroupNotice("게임이 시작했습니다.");
     }
 
     // team
 
     public async Task JoinTeam(string roomId, ChessTeam teamName)
     {
-        await LeaveTeam(roomId);
-        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
-        {
-            string groupName = $"{roomId}_{teamName}";
-            await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-            await Clients.Group(groupName).GroupNotice($"{username}님이 참여했습니다.");
-            Context.Items["RoomId"] = roomId;
-            Context.Items["TeamName"] = teamName;
-            await Clients.Caller.HubResponse(HubAction.JoinTeam.ToInt(), true, "팀 참여 성공했습니다.");
-            return;
-        }
-        await Clients.Caller.HubResponse(HubAction.JoinTeam.ToInt(), false, "팀 참여 실패했습니다.");
+        var username = await CheckLogin(HubAction.JoinTeam);
+        if (username == null) return;
+        string groupName = $"{roomId}_{teamName}";
+        await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
+        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        await Clients.Group(groupName).GroupNotice($"{username}님이 참여했습니다.");
+        Context.Items["RoomId"] = roomId;
+        Context.Items["TeamName"] = teamName;
+        await Clients.Caller.HubResponse(HubAction.JoinTeam.ToInt(), true, "팀 참여 성공했습니다.");
     }
 
     private async Task LeaveTeam(string roomId)
     {
-        if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
-        {
-            string blackTeam = $"{roomId}_{ChessTeam.Black}";
-            string whiteTeam = $"{roomId}_{ChessTeam.White}";
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, blackTeam);
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, whiteTeam);
-            await Clients.Caller.HubResponse(HubAction.LeaveTeam.ToInt(), true, "팀에서 나갔습니다.");
-            return;
-        }
-        await Clients.Caller.HubResponse(HubAction.LeaveTeam.ToInt(), false, "팀에서 나가지 못했습니다.");
+        var username = await CheckLogin(HubAction.LeaveTeam);
+        if (username == null) return;
+        string blackTeam = $"{roomId}_{ChessTeam.Black}";
+        string whiteTeam = $"{roomId}_{ChessTeam.White}";
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, blackTeam);
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, whiteTeam);
+        await Clients.Caller.HubResponse(HubAction.LeaveTeam.ToInt(), true, "팀에서 나갔습니다.");
     }
 
     // chat
 
     public async Task SendChat(ChatTarget chatTarget, string message)
     {
+        var username = await CheckLogin(HubAction.SendChat);
+        if (username == null) return;
         switch (chatTarget)
         {
             case ChatTarget.Room:
                 {
-                    if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
-                    {
-                        if (Context.Items.TryGetValue("RoomId", out object? roomIdObj) && roomIdObj is string roomId)
-                        {
-                            await Clients.Group(roomId).SendMessage(username, message);
-                        }
-                    }
-                    break;  
+                    var roomId = await CheckRoom(HubAction.SendChat);
+                    if (roomId == null) return;
+                    await Clients.Group(roomId).SendMessage(username, message);
+                    break;
                 }
 
             case ChatTarget.Team:
                 {
-                    if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
-                    {
-                        if (Context.Items.TryGetValue("RoomId", out object? roomIdObj) && roomIdObj is string roomId)
-                        {
-                            if (Context.Items.TryGetValue("TeamName", out object? teamNameObj) && teamNameObj is string teamName)
-                            {
-                                string groupName = $"{roomId}_{teamName}";
-                                await Clients.Group(groupName).SendMessage(username, message);
-                            }
-                        }
-                    }
+                    var roomId = await CheckRoom(HubAction.SendChat);
+                    if (roomId == null) return;
+                    var teamName = await CheckTeam(HubAction.SendChat);
+                    if (teamName == null) return;
+                    string groupName = $"{roomId}_{teamName}";
+                    await Clients.Group(groupName).SendMessage(username, message);
                     break;
                 }
             case ChatTarget.All:
                 {
-                    if (Context.Items.TryGetValue("Username", out object? userObj) && userObj is string username)
-                    {
-                        await Clients.All.SendMessage(username, message);
-                    }
+                    await Clients.All.SendMessage(username, message);
                     break;  
                 }
             default:
+                await Clients.Caller.HubResponse(HubAction.SendChat.ToInt(), false, "메시지를 보내는데 실패했습니다.");
                 break;
         }
     }
@@ -214,5 +233,4 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
         Console.WriteLine($"Received : {message}");
         await Clients.Caller.Pong("Pong");
     }
-
 }
