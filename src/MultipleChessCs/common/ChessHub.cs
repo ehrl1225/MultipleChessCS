@@ -1,5 +1,4 @@
-using System.Runtime.InteropServices.ComTypes;
-using System.Text.RegularExpressions;
+using System.Runtime.InteropServices.Swift;
 
 namespace MultipleChessCs.Common;
 
@@ -172,22 +171,20 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
         var room = _chessManager.GetByRoomId(roomId);
         if (room == null)
         {
-            
+            await Clients.Caller.HubResponse(HubAction.JoinTeam, false, "방이 없습니다.");
             return;
         }
+        await LeaveTeam(roomId);
         string groupName = $"{roomId}_{teamName}";
-        await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
         await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         await Clients.Group(groupName).GroupNotice($"{username}님이 참여했습니다.");
         Context.Items["RoomId"] = roomId;
         Context.Items["TeamName"] = teamName;
         await Clients.Caller.HubResponse(HubAction.JoinTeam, true, "팀 참여 성공했습니다.");
     }
-
+    
     private async Task LeaveTeam(string roomId)
     {
-        var username = await CheckLogin(HubAction.LeaveTeam);
-        if (username == null) return;
         string blackTeam = $"{roomId}_{ChessTeam.Black}";
         string whiteTeam = $"{roomId}_{ChessTeam.White}";
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, blackTeam);
