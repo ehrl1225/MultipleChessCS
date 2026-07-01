@@ -73,6 +73,26 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
         await Clients.Caller.HubResponse(HubAction.Login, false, "로그인 실패");
     }
 
+    public async Task Logout()
+    {
+        var username = await CheckLogin(HubAction.Logout);
+        if (username == null) return;
+        var roomId = RoomId;
+        if (roomId != null)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
+            Context.Items.Remove(roomId);
+            var teamName = TeamName;
+            if (teamName != null)
+            {
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"{roomId}_{teamName}");
+                Context.Items.Remove(teamName);
+            }
+        }
+
+        await Clients.Caller.HubResponse(HubAction.Logout, true, "로그아웃 했습니다.");
+    }
+
     // room
 
     public async Task RequestCreateRoom(string roomName, int maxPlayerCount)
@@ -110,6 +130,8 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
         bool result = room.TryJoin(username);
         if (result)
         {
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
+            Context.Items["RoomId"] = roomId;
             await Clients.Caller.HubResponse(HubAction.JoinRoom, true, "방에 접속 성공했습니다.");
             return;
         }
@@ -124,7 +146,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
         bool result = _chessManager.DeleteRoom(roomId, username);
         if (result)
         {
-            await Clients.Caller.HubResponse(HubAction.DeleteRoom, true, "방을 삭제했습니다.");
+            await Clients.Group(roomId).HubResponse(HubAction.DeleteRoom, true, "방을 삭제했습니다.");
             return;
         }
         await Clients.Caller.HubResponse(HubAction.DeleteRoom, false, "방 삭제 실패했습니다.");
