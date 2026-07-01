@@ -1,6 +1,10 @@
-namespace MultipleChessCs.Domain.Player;
+
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
+namespace MultipleChessCs.Domain.Player;
+
+[Index(nameof(Username), IsUnique = true)]
 public class Player
 {
     [Key]
