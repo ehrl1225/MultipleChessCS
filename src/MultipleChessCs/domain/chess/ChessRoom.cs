@@ -30,6 +30,19 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
         return _admin == admin;
     }
 
+    public List<ChessPlayer> GetPlayers()
+    {
+        return _players.Values.ToList();
+    }
+
+    public bool KickPlayer(string playerName)
+    {
+        lock (_lock)
+        {
+            return _players.Remove(playerName);
+        }
+    }
+
     public bool StartGame(string admin)
     {
         if (IsAdmin(admin))
@@ -53,7 +66,7 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
         _currentTurn = ChessTeam.White;
     }
 
-    public bool TryJoin(string playerName)
+    public bool TryJoin(string playerName, string connectionId)
     {
         lock (_lock)
         {
@@ -66,20 +79,7 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
             {
                 return false;
             }
-            _players.Add(playerName, new ChessPlayer(playerName));
-            return true;
-        }
-    }
-
-    public bool TryExit(string playerName)
-    {
-        lock (_lock)
-        {
-            if (!_players.ContainsKey(playerName))
-            {
-                return false;
-            }
-            _players.Remove(playerName);
+            _players.Add(playerName, new ChessPlayer(playerName, connectionId));
             return true;
         }
     }
@@ -90,7 +90,7 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
         {
             var voters = _players.Values
                 .Where(p => p.Team == _currentTurn)
-                .Select( p => p._username);
+                .Select( p => p.Username);
             var moveResult = await _voteManager.StartVoteAsync(voters, 60);
 
             if (moveResult is MoveVote move)

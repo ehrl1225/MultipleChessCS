@@ -27,16 +27,21 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
         }
         return username;
     }
-
+    
     private async Task<string?> CheckRoom(HubAction action)
     {
-        var roomId = RoomId;
-        if (roomId == null) 
+        var username = await CheckLogin(action);
+        if (username == null) return null;
+        var room = _chessManager.GetByUsername(username);
+        if (room == null)
+        {
             await Clients.Caller.HubResponse(action, false, "방에 접속해야합니다.");
-        
-        return roomId;
+            return null;
+        }
+        return room.RoomId;
     }
 
+    
     private async Task<string?> CheckTeam(HubAction action)
     {
         var teamName = TeamName;
@@ -107,7 +112,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
             return;
         }
 
-        if (_chessManager.CreateRoom(username, roomName, maxPlayerCount))
+        if (_chessManager.CreateRoom(username, Context.ConnectionId, roomName, maxPlayerCount))
         {
             await Clients.Caller.HubResponse(HubAction.CreateRoom, true, "방이 생성되었습니다.");
             return;
@@ -127,7 +132,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
             await Clients.Caller.HubResponse(HubAction.JoinRoom, false, "방에 접속 실패했습니다.");
             return;
         }
-        bool result = room.TryJoin(username);
+        bool result = room.TryJoin(username, Context.ConnectionId);
         if (result)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
