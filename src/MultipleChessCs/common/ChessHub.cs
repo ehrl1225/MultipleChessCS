@@ -181,6 +181,20 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
         await Clients.Caller.ChessRoomListResponse(chessRooms);
     }
 
+    public async Task GetRoomInfo()
+    {
+        var username = await CheckLogin(HubAction.RoomInfo);
+        if (username == null) return;
+        var joinedRoom = _chessManager.GetByUsername(username);
+        if (joinedRoom == null)
+        {
+            await Clients.Caller.HubResponse(HubAction.RoomInfo, false, "방의 정보를 가져오는데 실패했습니다.");
+            return;
+        }
+        await Clients.Caller.HubResponse(HubAction.RoomInfo, true, "방의 정보를 가져오는데 성공했습니다.");
+        await Clients.Caller.ChessRoomDetailResponse(joinedRoom.ToDetailDto());
+    }
+
     public async Task StartRoomGame(string roomId)
     {
         var username = await CheckLogin(HubAction.StartGame);

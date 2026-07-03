@@ -14,6 +14,7 @@ public enum HubAction
     LeaveRoom = 104,
     GetRoomList = 105,
     StartGame = 106,
+    RoomInfo = 107,
     
     // 200대 : Team 관련 액션
     JoinTeam = 201,

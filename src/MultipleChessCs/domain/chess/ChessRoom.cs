@@ -16,8 +16,8 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
     private readonly VoteManager _voteManager = new();
     public int MaxPlayers { get; } = maxPlayers;
     private readonly Lock _lock = new();
-    private readonly string _admin = admin;
-    private bool _isStarted = false;
+    public readonly string Admin = admin;
+    public bool IsStarted { get; private set; } = false;
     private readonly ChessRules _chessRules = chessRules;
 
     public int GetPlayerCount()
@@ -27,7 +27,7 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
 
     public bool IsAdmin(string admin)
     {
-        return _admin == admin;
+        return Admin == admin;
     }
 
     public List<ChessPlayer> GetPlayers()
@@ -49,7 +49,7 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
         {
             lock (_lock)
             {
-                _isStarted = true;
+                IsStarted = true;
                 return true;
             }
         }
@@ -70,7 +70,7 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
     {
         lock (_lock)
         {
-            if (_isStarted) return false;
+            if (IsStarted) return false;
             if (_players.Count >= MaxPlayers)
             {
                 return false;
@@ -86,7 +86,7 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
 
     public async Task RunGameLoop()
     {
-        while (_isStarted)
+        while (IsStarted)
         {
             var voters = _players.Values
                 .Where(p => p.Team == _currentTurn)

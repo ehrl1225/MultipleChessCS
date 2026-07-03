@@ -12,4 +12,5 @@ public interface ChessHubInterface
     Task Pong(string message);
     Task Alert(string message);
     Task ChessRoomListResponse(ChessRoomDto[] rooms);
+    Task ChessRoomDetailResponse(ChessRoomDetailDto room);
 }
