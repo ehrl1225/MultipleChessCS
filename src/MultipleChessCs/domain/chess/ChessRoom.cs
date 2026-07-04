@@ -35,6 +35,11 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
         return _players.Values.ToList();
     }
 
+    public ChessPlayer? GetPlayer(string playerName)
+    {
+        return _players.GetValueOrDefault(playerName);
+    }
+
     public bool KickPlayer(string playerName)
     {
         lock (_lock)
@@ -82,6 +87,11 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
             _players.Add(playerName, new ChessPlayer(playerName, connectionId));
             return true;
         }
+    }
+
+    public bool IsInRoom(string playerName)
+    {
+        return _players.ContainsKey(playerName);
     }
 
     public async Task RunGameLoop()

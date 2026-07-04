@@ -8,9 +8,9 @@ public static class ChessMappingExtensions
         return new ChessRoomDto(room.RoomId, room.RoomName, room.MaxPlayers, room.GetPlayerCount());
     }
 
-    private static ChessPlayerDto ToDto(this ChessPlayer player)
+    private static ChessPlayerDto ToDto(this ChessPlayer player, bool isHost = false)
     {
-        return new ChessPlayerDto(player.Username, player.Team);
+        return new ChessPlayerDto(player.Username, player.Team, isHost);
     }
 
     public static ChessRoomDetailDto ToDetailDto(this ChessRoom room)
@@ -19,7 +19,7 @@ public static class ChessMappingExtensions
         int i = 0;
         foreach (var player in room.GetPlayers())
         {
-            players[i] = player.ToDto(); 
+            players[i] = player.ToDto(isHost: room.Admin == player.Username);
             i++;
         }
 
@@ -27,7 +27,6 @@ public static class ChessMappingExtensions
             room.RoomId,
             room.RoomName,
             players,
-            room.Admin,
             room.IsStarted);
     }
 }

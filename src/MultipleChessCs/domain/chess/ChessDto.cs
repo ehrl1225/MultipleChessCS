@@ -11,13 +11,13 @@ public record ChessRoomDto(
 
 public record ChessPlayerDto(
     string username,
-    ChessTeam? team
+    ChessTeam team,
+    bool isHost
 );
 
 public record ChessRoomDetailDto(
     string roomId,
     string roomName,
     ChessPlayerDto[] players,
-    string admin,
     bool isStarted
 );

@@ -22,24 +22,20 @@ public class ChessManager(ChessRules chessRules)
         if (!room.TryJoin(admin, connectionId)) return false;
         if (!_rooms.TryAdd(roomId, room)) return false;
         if (!_joinedRooms.TryAdd(admin, room)) return false;
-        
         return true;
     }
 
     public bool StartGame(string roomId, string admin)
     {
-        ChessRoom? room;
-        _rooms.TryGetValue(roomId, out room);
+        ChessRoom? room = GetByRoomId(roomId);
         if (room == null) return false;
         return room.StartGame(admin);
     }
 
-    public bool DeleteRoom(string roomId, string admin)
+    public bool DeleteRoom(string roomId)
     {
-        ChessRoom? room;
-        _rooms.TryGetValue(roomId, out room);
+        ChessRoom? room = GetByRoomId(roomId);
         if (room == null) return false;
-        if (!room.IsAdmin(admin)) return false;
         foreach (ChessPlayer player in room.GetPlayers())
         {
             room.KickPlayer(player.Username);
