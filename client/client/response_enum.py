@@ -9,3 +9,4 @@ class ResponseEnum(StrEnum):
     Alert = "Alert"
     ChessRoomListResponse = "ChessRoomListResponse"
     HubResponse = "HubResponse"
+    ChessRoomDetailResponse = "ChessRoomDetailResponse"

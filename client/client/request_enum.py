@@ -11,6 +11,7 @@ class RequestEnum(StrEnum):
     RequestDeleteRoom = "RequestDeleteRoom"
     GetRoomList = "GetRoomList"
     StartRoomGame = "StartRoomGame"
+    GetRoomInfo = "GetRoomInfo"
 
     # team
     JoinTeam = "JoinTeam"

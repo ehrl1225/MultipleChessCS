@@ -18,22 +18,24 @@ ApplicationWindow {
     Connections {
         target: authBridge
         function onLoginSuccess() {
-            mainStack.replace("LobbyView.qml")
-            lobbyBridge.refreshRoomList()
+            mainStack.replace("LobbyView.qml");
+            lobbyBridge.refreshRoomList();
         }
         function onRegisterSuccess() {
-            mainStack.pop()
+            mainStack.pop();
         }
     }
 
     Connections {
         target: lobbyBridge
         function onCreateRoomSuccess() {
-            mainStack.push("ChessRoomView.qml")
+            mainStack.push("ChessRoomView.qml");
+            roomBridge.getRoomInfo();
         }
 
         function onJoinRoomSuccess() {
-            mainStack.push("ChessRoomView.qml")
+            mainStack.push("ChessRoomView.qml");
+            roomBridge.getRoomInfo();
         }
     }
 }

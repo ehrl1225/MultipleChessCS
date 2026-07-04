@@ -33,51 +33,193 @@ Rectangle {
             }
         }
 
-        ScrollView {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            clip: true
+        RowLayout {
+            ColumnLayout {
+                Button {
+                    text: "관전"
+                    font.pixelSize: 30
+                    font.bold: true
 
-            ListView {
-                id: playerListView
-                model: roomBridge.players
-                spacing: 12
+                    onClicked: {
+                        roomBridge.joinTeam("Viewer");
+                    }
+                }
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    clip: true
 
-                delegate: Rectangle {
-                    width: playerListView.width
-                    height: 70
-                    color: "white"
-                    radius: 10
-                    border.color: "#eee"
+                    ListView {
+                        id: viewerListView
+                        model: roomBridge.viewers
+                        spacing: 12
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 20
+                        delegate: Rectangle {
+                            width: viewerListView.width
+                            height: 70
+                            color: "white"
+                            radius: 10
+                            border.color: "#eee"
 
-                        Text {
-                            text: modelData.username
-                            font.pixelSize: 18
-                            font.bold: true
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.margins: 20
+
+                                Text {
+                                    text: modelData.username
+                                    font.pixelSize: 18
+                                    font.bold: true
+                                }
+
+                                Text {
+                                    text: modelData.isHost ? "👑방장" : ""
+                                    color: "#faa140"
+                                    font.pixelSize: 14
+                                }
+
+                                Item { Layout.fillWidth: true }
+
+                                Rectangle {
+                                    width: 60; height: 30
+                                    color: "grey"
+                                    radius: 4
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "Viewer"
+                                        color: "#333"
+                                        font.pixelSize: 12
+                                        font.bold: true
+                                    }
+                                }
+                            }
                         }
+                    }
+                }
+            }
 
-                        Text {
-                            text: modelData.isHost ? "👑방장" : ""
-                            color: "#faa140"
-                            font.pixelSize: 14
+            ColumnLayout {
+                Button {
+                    text: "백팀"
+                    font.pixelSize: 30
+                    font.bold: true
+
+                    onClicked: {
+
+                    }
+                }
+
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    clip: true
+
+                    ListView {
+                        id: whiteTeamListView
+                        model: roomBridge.white_teams
+                        spacing: 12
+
+                        delegate: Rectangle {
+                            width: whiteTeamListView.width
+                            height: 70
+                            color: "white"
+                            radius: 10
+                            border.color: "#eee"
+
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.margins: 20
+
+                                Text {
+                                    text: modelData.username
+                                    font.pixelSize: 18
+                                    font.bold: true
+                                }
+
+                                Text {
+                                    text: modelData.isHost ? "👑방장" : ""
+                                    color: "#faa140"
+                                    font.pixelSize: 14
+                                }
+
+                                Item {Layout.fillWidth: true}
+
+                                Rectangle {
+                                    width: 60; height: 30
+                                    color: "#eee"
+                                    radius: 4
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "WHITE"
+                                        color: "#333"
+                                        font.pixelSize: 12
+                                        font.bold: true
+                                    }
+                                }
+                            }
                         }
+                    }
+                }
+            }
 
-                        Item { Layout.fillWidth: true }
+            ColumnLayout {
+                Button {
+                    text: "흑팀"
+                    font.pixelSize: 30
+                    font.bold: true
 
-                        Rectangle {
-                            width: 60; height: 30
-                            color: modelData.team === 1 ? "#eee" : "#333"
-                            radius: 4
-                            Text {
-                                anchors.centerIn: parent
-                                text: modelData.team === 1 ? "WHITE" : "BLACK"
-                                color: modelData.team === 1 ? "#333" : "white"
-                                font.pixelSize: 12
-                                font.bold: true
+                    onClicked: {
+                        if (roomBridge.isGameStarted) return;
+                        roomBridge.joinTeam("black");
+
+                    }
+                }
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    clip: true
+
+                    ListView {
+                        id: blackTeamListView
+                        model: roomBridge.black_teams
+                        spacing: 12
+
+                        delegate: Rectangle {
+                            width: blackTeamListView.width
+                            height: 70
+                            color: "white"
+                            radius: 10
+                            border.color: "#eee"
+
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.margins: 20
+
+                                Text {
+                                    text: modelData.username
+                                    font.pixelSize: 18
+                                    font.bold: true
+                                }
+
+                                Text {
+                                    text: modelData.isHost ? "👑방장" : ""
+                                    color: "#faa140"
+                                    font.pixelSize: 14
+                                }
+
+                                Item { Layout.fillWidth: true }
+
+                                Rectangle {
+                                    width: 60; height: 30
+                                    color: "#333"
+                                    radius: 4
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "BLACK"
+                                        color: "white"
+                                        font.pixelSize: 12
+                                        font.bold: true
+                                    }
+                                }
                             }
                         }
                     }
@@ -85,14 +227,10 @@ Rectangle {
             }
         }
 
+
         RowLayout {
             Layout.fillWidth: true
             spacing: 15
-
-            Button {
-                text: "팀 변경"
-                onClicked: roomBridge.changeTeam()
-            }
 
             Button {
                 text: "방 나가기"
