@@ -71,6 +71,14 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
         _currentTurn = ChessTeam.White;
     }
 
+    public bool JoinTeam(string playerName, ChessTeam team)
+    {
+        ChessPlayer? player = GetPlayer(playerName);
+        if (player == null) return false;
+        player.Team = team;
+        return true;
+    }
+
     public bool TryJoin(string playerName, string connectionId)
     {
         lock (_lock)
@@ -80,8 +88,14 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
             {
                 return false;
             }
-            if (_players.ContainsKey(playerName))
+            var player = GetPlayer(playerName);
+            if (player != null)
             {
+                if (player.ConnectionId != connectionId)
+                {
+                    player.ConnectionId = connectionId;
+                    return true;
+                }
                 return false;
             }
             _players.Add(playerName, new ChessPlayer(playerName, connectionId));

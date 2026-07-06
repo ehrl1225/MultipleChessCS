@@ -25,6 +25,14 @@ public class ChessManager(ChessRules chessRules)
         return true;
     }
 
+    public bool JoinRoom(string playerName, string connectionId, string roomId)
+    {
+        ChessRoom? room = GetByRoomId(roomId);
+        if (room == null) return false;
+        _joinedRooms.TryAdd(playerName, room);
+        return room.TryJoin(playerName, connectionId);
+    }
+
     public bool StartGame(string roomId, string admin)
     {
         ChessRoom? room = GetByRoomId(roomId);
@@ -39,6 +47,7 @@ public class ChessManager(ChessRules chessRules)
         foreach (ChessPlayer player in room.GetPlayers())
         {
             room.KickPlayer(player.Username);
+            _joinedRooms.TryRemove(player.Username, out _);
         }
         bool result = _rooms.TryRemove(roomId, out room);
         return result;

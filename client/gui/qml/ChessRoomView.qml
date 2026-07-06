@@ -41,6 +41,7 @@ Rectangle {
                     font.bold: true
 
                     onClicked: {
+                        if (roomBridge.isGameStarted) return;
                         roomBridge.joinTeam("Viewer");
                     }
                 }
@@ -104,7 +105,8 @@ Rectangle {
                     font.bold: true
 
                     onClicked: {
-
+                        if (roomBridge.isGameStarted) return;
+                        roomBridge.joinTeam("White")
                     }
                 }
 
@@ -169,7 +171,7 @@ Rectangle {
 
                     onClicked: {
                         if (roomBridge.isGameStarted) return;
-                        roomBridge.joinTeam("black");
+                        roomBridge.joinTeam("Black");
 
                     }
                 }

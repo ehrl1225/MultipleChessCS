@@ -39,7 +39,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
     
     private async Task<string?> CheckTeam(HubAction action)
     {
-        var teamName = TeamName;
+        string? teamName = TeamName;
         if (teamName == null)
             await Clients.Caller.HubResponse(action, false, "팀에 접속해야합니다.");
         return teamName;
@@ -128,10 +128,10 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
         ChessRoom? room = _chessManager.GetByRoomId(roomId);
         if (room == null)
         {
-            await Clients.Caller.HubResponse(HubAction.JoinRoom, false, "방에 접속 실패했습니다.");
+            await Clients.Caller.HubResponse(HubAction.JoinRoom, false, "방이 존재하지 않습니다.");
             return;
         }
-        var joinedRoom = _chessManager.GetByUsername(username);
+        ChessRoom? joinedRoom = _chessManager.GetByUsername(username);
         if (joinedRoom != null)
         {
             if (joinedRoom.RoomId != roomId)
@@ -140,16 +140,14 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
                 return;
             } 
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-            Context.Items["RoomId"] = roomId;
             await Clients.Caller.HubResponse(HubAction.JoinRoom, true, "방에 접속 성공했습니다.");
             return;
         }
         
-        bool result = room.TryJoin(username, Context.ConnectionId);
+        bool result =_chessManager.JoinRoom(username, Context.ConnectionId, roomId);
         if (result)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-            Context.Items["RoomId"] = roomId;
             await Clients.Caller.HubResponse(HubAction.JoinRoom, true, "방에 접속 성공했습니다.");
             return;
         }
@@ -193,7 +191,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
 
     public async Task RequestLeaveRoom(string roomId)
     {
-        var username = await CheckLogin(HubAction.LeaveRoom);
+        string? username = await CheckLogin(HubAction.LeaveRoom);
         if (username == null) return;
         
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
@@ -231,7 +229,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
 
     public async Task StartRoomGame(string roomId)
     {
-        var username = await CheckLogin(HubAction.StartGame);
+        string? username = await CheckLogin(HubAction.StartGame);
         if (username == null) return;
         _chessManager.StartGame(roomId, username);
         await Clients.Group(roomId).GroupNotice("게임이 시작했습니다.");
@@ -241,22 +239,23 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
 
     public async Task JoinTeam(ChessTeam teamName)
     {
-        var username = await CheckLogin(HubAction.JoinTeam);
+        string? username = await CheckLogin(HubAction.JoinTeam);
         if (username == null) return;
-        var joinedRoom = _chessManager.GetByUsername(username);
+        ChessRoom? joinedRoom = _chessManager.GetByUsername(username);
         if (joinedRoom == null)
         {
             await Clients.Caller.HubResponse(HubAction.JoinTeam, false, "들어간 방이 없습니다.");
             return;
         }
+        bool result = joinedRoom.JoinTeam(username, teamName);
+        if (!result) return;
         string roomId = joinedRoom.RoomId;
         await LeaveTeam(roomId);
         string groupName = $"{roomId}_{teamName}";
-        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        
         await Clients.Group(groupName).GroupNotice($"{username}님이 참여했습니다.");
-        Context.Items["RoomId"] = roomId;
-        Context.Items["TeamName"] = teamName;
         await Clients.Caller.HubResponse(HubAction.JoinTeam, true, "팀 참여 성공했습니다.");
+        await Clients.Group(roomId).ChessRoomDetailResponse(joinedRoom.ToDetailDto());
     }
     
     private async Task LeaveTeam(string roomId)
@@ -272,7 +271,7 @@ public class ChessHub(AuthService authService, ChessManager chessManager) : Hub<
 
     public async Task SendChat(ChatTarget chatTarget, string message)
     {
-        var username = await CheckLogin(HubAction.SendChat);
+        string? username = await CheckLogin(HubAction.SendChat);
         if (username == null) return;
         switch (chatTarget)
         {

@@ -42,8 +42,13 @@ class SignalRClient(IChessHub):
     def addHandler(self, event_name: str, handler: Callable):
         self.connection.on(event_name, handler)
 
-    def connect(self):
-        self.connection.start()
+    def connect(self) -> bool:
+        try:
+            self.connection.start()
+            return True
+        except Exception as e:
+            logging.error(e)
+            return False
 
     def send(self, method: str, args: list):
         if self.is_open:

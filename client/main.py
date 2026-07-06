@@ -26,8 +26,11 @@ def main():
     engine.rootContext().setContextProperty("roomBridge", room_bridge)
 
     engine.load("gui/qml/Main.qml")
-    signalr_client.connect()
-    sys.exit(app.exec())
+    result = signalr_client.connect()
+    if result:
+        sys.exit(app.exec())
+    else:
+        print("Can't connect to server")
 
 if __name__ == "__main__":
     main()
