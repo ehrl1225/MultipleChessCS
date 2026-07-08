@@ -7,22 +7,25 @@ from client.HubAction import HubAction
 from client.chess_hub_interface import IChessHub
 from client.response_enum import ResponseEnum
 from client.request_enum import RequestEnum
+from gui.user_data import UserData
+
 
 class RoomBridge(QObject):
     roomInfoChanged = pyqtSignal()
     gameStarted = pyqtSignal()
     leftRoom = pyqtSignal()
 
-    def __init__(self, signalr_client: IChessHub):
+    def __init__(self, signalr_client: IChessHub, userdata: UserData):
         super().__init__()
-        self.signalr_client = signalr_client
-
-        self._room_id = ""
-        self._room_name = "대기실"
-        self._players = []
-        self._is_game_started = False
-        self._is_host = False
-        self._my_username = ""
+        self.signalr_client:IChessHub = signalr_client
+        self.userdata:UserData = userdata
+        self._room_id:str = ""
+        self._room_name:str = "대기실"
+        self._players:list = []
+        self._is_game_started:bool = False
+        self._is_host:bool = False
+        self._my_username: str = ""
+        self._admin:str = ""
 
         self._add_handlers()
 
@@ -47,6 +50,8 @@ class RoomBridge(QObject):
         self._room_id = data.get("roomId", self._room_id)
         self._room_name = data.get("roomName", self._room_name)
         self._players = data.get("players", [])
+        self._admin = data.get("admin", self._admin)
+        self._is_host = self._is_host == self.userdata.getUsername()
         self._is_game_started = data.get("isStarted", False)
         self.roomInfoChanged.emit()
 

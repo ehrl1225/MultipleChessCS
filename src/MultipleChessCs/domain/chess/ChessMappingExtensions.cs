@@ -15,9 +15,9 @@ public static class ChessMappingExtensions
 
     public static ChessRoomDetailDto ToDetailDto(this ChessRoom room)
     {
-        ChessPlayerDto[] players = new ChessPlayerDto[room.GetPlayerCount()];
+        var players = new ChessPlayerDto[room.GetPlayerCount()];
         int i = 0;
-        foreach (var player in room.GetPlayers())
+        foreach (ChessPlayer player in room.GetPlayers())
         {
             players[i] = player.ToDto(isHost: room.Admin == player.Username);
             i++;
@@ -26,6 +26,7 @@ public static class ChessMappingExtensions
         return new ChessRoomDetailDto(
             room.RoomId,
             room.RoomName,
+            room.Admin,
             players,
             room.IsStarted);
     }

@@ -18,6 +18,7 @@ public record ChessPlayerDto(
 public record ChessRoomDetailDto(
     string roomId,
     string roomName,
+    string admin,
     ChessPlayerDto[] players,
     bool isStarted
 );

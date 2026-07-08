@@ -4,6 +4,7 @@ from client.HubAction import HubAction
 from client.chess_hub_interface import IChessHub
 from client.response_enum import ResponseEnum
 from client.signalr_client import SignalRClient
+from gui.user_data import UserData
 
 
 class AuthBridge(QObject):
@@ -11,11 +12,13 @@ class AuthBridge(QObject):
     registerSuccess = pyqtSignal()
     errorOccurred = pyqtSignal(str)
 
-    def __init__(self, signalr_client:IChessHub):
+    def __init__(self, signalr_client:IChessHub, userdata: UserData):
         super().__init__()
         self.signalr_client = signalr_client
+        self.userdata = userdata
         self.add_handler()
         self._error_message = ""
+        self.__username = ""
 
     def add_handler(self):
         self.signalr_client.addHandler(ResponseEnum.HubResponse, self.onHubResponse)
@@ -27,6 +30,7 @@ class AuthBridge(QObject):
         if not success:
             self._error_message = msg
             self.errorOccurred.emit(msg)
+            self.userdata.setUsername(self.__username)
             return
         match hub_action:
             case HubAction.Register:
@@ -43,6 +47,7 @@ class AuthBridge(QObject):
     def login(self, username, password):
         print("로그인 시도")
         self.signalr_client.request_login(username, password)
+        self.__username = username
 
     @pyqtSlot(str, str)
     def register(self, username, password):
