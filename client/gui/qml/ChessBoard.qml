@@ -31,7 +31,7 @@ Item {
                     radius: width / 2
                     color: "green"
                     visible: {
-                        for (var i=0; i< bridge.possibleMoves.length; i++){
+                        for (let i=0; i< bridge.possibleMoves.length; i++){
                             if (bridge.possibleMoves[i].x === col && bridge.possibleMoves[i].y === row) return true;
                         }
                         return false;

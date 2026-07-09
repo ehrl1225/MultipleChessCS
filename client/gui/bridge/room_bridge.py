@@ -51,7 +51,7 @@ class RoomBridge(QObject):
         self._room_name = data.get("roomName", self._room_name)
         self._players = data.get("players", [])
         self._admin = data.get("admin", self._admin)
-        self._is_host = self._is_host == self.userdata.getUsername()
+        self._is_host = self._admin == self.userdata.getUsername()
         self._is_game_started = data.get("isStarted", False)
         self.roomInfoChanged.emit()
 
@@ -82,11 +82,8 @@ class RoomBridge(QObject):
 
     @pyqtProperty(bool, notify=roomInfoChanged)
     def canStart(self):
-        return len(self._players) >= 2
-
-    @pyqtSlot(str, str)
-    def changeTeam(self, room_id: str, team_name: str):
-        self.signalr_client.join_team(room_id, team_name)
+        count = len([player for player in self._players if player.get("team") != ChessTeam.Viewer])
+        return count >= 2
 
     @pyqtSlot(str)
     def joinTeam(self, team_name: str):

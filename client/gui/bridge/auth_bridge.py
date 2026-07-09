@@ -30,12 +30,12 @@ class AuthBridge(QObject):
         if not success:
             self._error_message = msg
             self.errorOccurred.emit(msg)
-            self.userdata.setUsername(self.__username)
             return
         match hub_action:
             case HubAction.Register:
                 self.registerSuccess.emit()
             case HubAction.Login:
+                self.userdata.setUsername(self.__username)
                 self.loginSuccess.emit()
 
 

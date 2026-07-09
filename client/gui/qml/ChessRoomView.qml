@@ -36,6 +36,7 @@ Rectangle {
         RowLayout {
             ColumnLayout {
                 Button {
+                    Layout.fillWidth: true
                     text: "관전"
                     font.pixelSize: 30
                     font.bold: true
@@ -100,6 +101,7 @@ Rectangle {
 
             ColumnLayout {
                 Button {
+                    Layout.fillWidth: true
                     text: "백팀"
                     font.pixelSize: 30
                     font.bold: true
@@ -165,6 +167,7 @@ Rectangle {
 
             ColumnLayout {
                 Button {
+                    Layout.fillWidth: true
                     text: "흑팀"
                     font.pixelSize: 30
                     font.bold: true
