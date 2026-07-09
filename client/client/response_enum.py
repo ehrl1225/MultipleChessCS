@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import StrEnum
 
-class ResponseEnum(Enum):
+class ResponseEnum(StrEnum):
     RegisterResponse = "RegisterResponse"
     LoginResponse = "LoginResponse"
     GroupNotice = "GroupNotice"
@@ -8,3 +8,5 @@ class ResponseEnum(Enum):
     Pong = "Pong"
     Alert = "Alert"
     ChessRoomListResponse = "ChessRoomListResponse"
+    HubResponse = "HubResponse"
+    ChessRoomDetailResponse = "ChessRoomDetailResponse"

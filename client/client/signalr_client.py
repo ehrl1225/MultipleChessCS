@@ -42,28 +42,43 @@ class SignalRClient(IChessHub):
     def addHandler(self, event_name: str, handler: Callable):
         self.connection.on(event_name, handler)
 
-    def connect(self):
-        self.connection.start()
+    def connect(self) -> bool:
+        try:
+            self.connection.start()
+            return True
+        except Exception as e:
+            logging.error(e)
+            return False
 
     def send(self, method: str, args: list):
         if self.is_open:
             self.connection.send(method, args)
 
     def request_login(self, username, password):
-        self.send(RequestEnum.RequestLogin.value, [username, password])
+        self.send(RequestEnum.RequestLogin, [username, password])
 
     def request_register(self, username: str, password: str):
-        self.send(RequestEnum.RequestRegister.value, [username, password])
+        self.send(RequestEnum.RequestRegister, [username, password])
 
     def request_create_room(self, room_name: str, max_player_count: int):
-        self.send(RequestEnum.RequestCreateRoom.value, [room_name, max_player_count])
+        self.send(RequestEnum.RequestCreateRoom, [room_name, max_player_count])
 
     def request_join_room(self, room_id: str):
-        self.send(RequestEnum.RequestJoinRoom.value, [room_id])
+        self.send(RequestEnum.RequestJoinRoom, [room_id])
 
     def request_delete_room(self, room_id: str):
-        self.send(RequestEnum.RequestDeleteRoom.value, [room_id])
+        self.send(RequestEnum.RequestDeleteRoom, [room_id])
 
     def get_room_list(self):
-        self.send(RequestEnum.GetRoomList.value, [])
+        self.send(RequestEnum.GetRoomList, [])
+
+    def get_room_info(self):
+        self.send(RequestEnum.GetRoomInfo, [])
+
+    def join_team(self, team_name: str):
+        self.send(RequestEnum.JoinTeam, [team_name])
+
+    def leave_team(self, room_id: str):
+        self.send(RequestEnum.LeaveTeam, [room_id])
+
 

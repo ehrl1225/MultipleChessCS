@@ -16,8 +16,8 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
     private readonly VoteManager _voteManager = new();
     public int MaxPlayers { get; } = maxPlayers;
     private readonly Lock _lock = new();
-    private readonly string _admin = admin;
-    private bool _isStarted = false;
+    public readonly string Admin = admin;
+    public bool IsStarted { get; private set; } = false;
     private readonly ChessRules _chessRules = chessRules;
 
     public int GetPlayerCount()
@@ -27,7 +27,25 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
 
     public bool IsAdmin(string admin)
     {
-        return _admin == admin;
+        return Admin == admin;
+    }
+
+    public List<ChessPlayer> GetPlayers()
+    {
+        return _players.Values.ToList();
+    }
+
+    public ChessPlayer? GetPlayer(string playerName)
+    {
+        return _players.GetValueOrDefault(playerName);
+    }
+
+    public bool KickPlayer(string playerName)
+    {
+        lock (_lock)
+        {
+            return _players.Remove(playerName);
+        }
     }
 
     public bool StartGame(string admin)
@@ -36,7 +54,7 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
         {
             lock (_lock)
             {
-                _isStarted = true;
+                IsStarted = true;
                 return true;
             }
         }
@@ -53,44 +71,50 @@ public class ChessRoom(string roomId,string roomName,  string admin, int maxPlay
         _currentTurn = ChessTeam.White;
     }
 
-    public bool TryJoin(string playerName)
+    public bool JoinTeam(string playerName, ChessTeam team)
+    {
+        ChessPlayer? player = GetPlayer(playerName);
+        if (player == null) return false;
+        player.Team = team;
+        return true;
+    }
+
+    public bool TryJoin(string playerName, string connectionId)
     {
         lock (_lock)
         {
-            if (_isStarted) return false;
+            if (IsStarted) return false;
             if (_players.Count >= MaxPlayers)
             {
                 return false;
             }
-            if (_players.ContainsKey(playerName))
+            var player = GetPlayer(playerName);
+            if (player != null)
             {
+                if (player.ConnectionId != connectionId)
+                {
+                    player.ConnectionId = connectionId;
+                    return true;
+                }
                 return false;
             }
-            _players.Add(playerName, new ChessPlayer(playerName));
+            _players.Add(playerName, new ChessPlayer(playerName, connectionId));
             return true;
         }
     }
 
-    public bool TryExit(string playerName)
+    public bool IsInRoom(string playerName)
     {
-        lock (_lock)
-        {
-            if (!_players.ContainsKey(playerName))
-            {
-                return false;
-            }
-            _players.Remove(playerName);
-            return true;
-        }
+        return _players.ContainsKey(playerName);
     }
 
     public async Task RunGameLoop()
     {
-        while (_isStarted)
+        while (IsStarted)
         {
             var voters = _players.Values
                 .Where(p => p.Team == _currentTurn)
-                .Select( p => p._username);
+                .Select( p => p.Username);
             var moveResult = await _voteManager.StartVoteAsync(voters, 60);
 
             if (moveResult is MoveVote move)

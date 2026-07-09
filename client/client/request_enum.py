@@ -1,13 +1,22 @@
-from enum import Enum
+from enum import StrEnum
 
-class RequestEnum(Enum):
+class RequestEnum(StrEnum):
+    # auth
     RequestLogin = "RequestLogin"
     RequestRegister = "RequestRegister"
+
+    # room
     RequestCreateRoom = "RequestCreateRoom"
     RequestJoinRoom = "RequestJoinRoom"
     RequestDeleteRoom = "RequestDeleteRoom"
     GetRoomList = "GetRoomList"
     StartRoomGame = "StartRoomGame"
+    GetRoomInfo = "GetRoomInfo"
+
+    # team
     JoinTeam = "JoinTeam"
+    LeaveTeam = "LeaveTeam"
+
+    # etc
     SendChat = "SendChat"
     Ping = "Ping"

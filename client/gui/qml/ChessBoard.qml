@@ -16,7 +16,7 @@ Item {
                 width: root.cellSize; height: root.cellSize
                 property int row: Math.floor(index / 8)
                 property int col: index % 8
-                color: (row + col) % 2 == 0 ? "#D18B47" : "#FFCE9E"
+                color: (row + col) % 2 === 0 ? "#D18B47" : "#FFCE9E"
 
                 Rectangle {
                     anchors.fill: parent
@@ -31,7 +31,7 @@ Item {
                     radius: width / 2
                     color: "green"
                     visible: {
-                        for (var i=0; i< bridge.possibleMoves.length; i++){
+                        for (let i=0; i< bridge.possibleMoves.length; i++){
                             if (bridge.possibleMoves[i].x === col && bridge.possibleMoves[i].y === row) return true;
                         }
                         return false;

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using MultipleChessCs.Common.Hub;
 using MultipleChessCs.Domain.Player;
 
 

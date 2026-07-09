@@ -3,6 +3,7 @@ using MultipleChessCs.Domain.Chess.Rules;
 using Microsoft.AspNetCore.Identity;
 using Domain.Player;
 using Common;
+using Common.Hub;
 using dotenv.net;
 using Microsoft.EntityFrameworkCore;
 

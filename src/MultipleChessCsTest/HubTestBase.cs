@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Moq;
 using MultipleChessCs.Common;
+using MultipleChessCs.Common.Hub;
 using MultipleChessCs.Domain.Player;
 using Microsoft.AspNetCore.Identity;
 using dotenv.net;

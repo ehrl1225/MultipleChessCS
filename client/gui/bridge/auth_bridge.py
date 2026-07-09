@@ -1,8 +1,10 @@
 from PyQt6.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
+from client.HubAction import HubAction
 from client.chess_hub_interface import IChessHub
 from client.response_enum import ResponseEnum
 from client.signalr_client import SignalRClient
+from gui.user_data import UserData
 
 
 class AuthBridge(QObject):
@@ -10,34 +12,32 @@ class AuthBridge(QObject):
     registerSuccess = pyqtSignal()
     errorOccurred = pyqtSignal(str)
 
-    def __init__(self, signalr_client:IChessHub):
+    def __init__(self, signalr_client:IChessHub, userdata: UserData):
         super().__init__()
         self.signalr_client = signalr_client
+        self.userdata = userdata
         self.add_handler()
         self._error_message = ""
+        self.__username = ""
 
     def add_handler(self):
-        self.signalr_client.addHandler(ResponseEnum.RegisterResponse.value, self.onRegisterResponse)
-        self.signalr_client.addHandler(ResponseEnum.LoginResponse.value, self.onLoginResponse)
+        self.signalr_client.addHandler(ResponseEnum.HubResponse, self.onHubResponse)
 
-    def onRegisterResponse(self, args):
-        success = args[0]
-        message = args[1]
-        if success:
-            self.registerSuccess.emit()
-        else:
-            self._error_message = message
-            self.errorOccurred.emit(message)
+    def onHubResponse(self, args):
+        hub_action: int = args[0]
+        success: bool = args[1]
+        msg: str = args[2]
+        if not success:
+            self._error_message = msg
+            self.errorOccurred.emit(msg)
+            return
+        match hub_action:
+            case HubAction.Register:
+                self.registerSuccess.emit()
+            case HubAction.Login:
+                self.userdata.setUsername(self.__username)
+                self.loginSuccess.emit()
 
-
-    def onLoginResponse(self, args):
-        success: bool = args[0]
-        message: str = args[1]
-        if success:
-            self.loginSuccess.emit()
-        else:
-            self._error_message = message
-            self.errorOccurred.emit(message)
 
     @pyqtProperty(str, notify=errorOccurred)
     def errorMessage(self):
@@ -45,12 +45,11 @@ class AuthBridge(QObject):
 
     @pyqtSlot(str, str)
     def login(self, username, password):
-        self.signalr_client.request_login(username, password)
         print("로그인 시도")
-        # TODO 인증 로직 구현
+        self.signalr_client.request_login(username, password)
+        self.__username = username
 
     @pyqtSlot(str, str)
     def register(self, username, password):
-        self.signalr_client.request_register(username, password)
         print("회원가입 시도")
-        # TODO 회원가입 구현
+        self.signalr_client.request_register(username, password)
