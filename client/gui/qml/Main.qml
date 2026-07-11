@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls
+import QtQuick.Layouts 1.15
 
 ApplicationWindow {
     id: window
@@ -54,9 +55,26 @@ ApplicationWindow {
                     }
                 }
 
-                TextField {
+                RowLayout {
                     width: parent.width
-                    placeholderText: "메시지를 입력하세요..."
+                    spacing: 5
+
+                    ComboBox {
+                        id: chatTargetCombo
+                        implicitWidth: 80
+                        model: ["모두", "방", "팀"]
+                        currentIndex: 0
+                    }
+
+                    TextField {
+                        id: messageInput
+                        Layout.fillWidth: true
+                        placeholderText: "메시지를 입력하세요..."
+                        onAccepted: {
+
+                            messageInput.text = "";
+                        }
+                    }
                 }
             }
         }

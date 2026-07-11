@@ -1,6 +1,7 @@
 using MultipleChessCs.Domain.Chess;
 
 namespace MultipleChessCs.Common.Hub;
+using Domain.Chat;
 
 
 public partial class ChessHub
@@ -15,7 +16,7 @@ public partial class ChessHub
             {
                 ChessRoom? room = await CheckRoom(HubAction.SendChat);
                 if (room == null) return;
-                await Clients.Group(room.RoomId).SendMessage(username, message);
+                await Clients.Group(room.RoomId).SendMessage(ChatTarget.Room,username, message);
                 break;
             }
 
@@ -26,12 +27,12 @@ public partial class ChessHub
                 ChessPlayer? player = room.GetPlayer(username);
                 if (player == null) return;
                 string groupName = $"{room.RoomId}_{player.Team}";
-                await Clients.Group(groupName).SendMessage(username, message);
+                await Clients.Group(groupName).SendMessage(ChatTarget.Team,username, message);
                 break;
             }
             case ChatTarget.All:
             {
-                await Clients.All.SendMessage(username, message);
+                await Clients.All.SendMessage(ChatTarget.All, username, message);
                 break;  
             }
             default:

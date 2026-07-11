@@ -1,3 +1,5 @@
+using MultipleChessCs.Domain.Chat;
+
 namespace MultipleChessCs.Common;
 using Domain.Chess;
 
@@ -8,7 +10,7 @@ public interface ChessHubInterface
     Task LoginResponse(bool success, string message);
     Task HubResponse(HubAction action, bool success, string message);
     Task GroupNotice(string message);
-    Task SendMessage(string sender, string message);
+    Task SendMessage(ChatTarget chatTarget, string sender, string message);
     Task Pong(string message);
     Task Alert(string message);
     Task ChessRoomListResponse(ChessRoomDto[] rooms);
