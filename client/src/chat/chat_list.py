@@ -1,5 +1,5 @@
-from chat.chat import Chat
-from chat.chat_target import ChatTarget
+from src.chat.chat import Chat
+from src.chat.chat_target import ChatTarget
 
 
 class ChatList:

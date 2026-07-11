@@ -1,9 +1,9 @@
 import os
 from PyQt6.QtCore import QObject, pyqtSlot, pyqtSignal, QVariant, pyqtProperty
-from chess.chess_color import ChessColor
-from chess.chess_class import ChessClass
-from chess.chess_board import ChessBoard
-from chess.chess_piece import ChessPiece
+from src.chess.chess_color import ChessColor
+from src.chess.chess_class import ChessClass
+from src.chess.chess_board import ChessBoard
+from src.chess.chess_piece import ChessPiece
 
 
 class ChessBoardBridge(QObject):

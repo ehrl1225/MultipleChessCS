@@ -4,8 +4,8 @@ from typing import Callable
 from signalrcore.hub_connection_builder import HubConnectionBuilder
 from signalrcore.hub.base_hub_connection import BaseHubConnection
 
-from client.chess_hub_interface import IChessHub
-from client.request_enum import RequestEnum
+from src.client.chess_hub_interface import IChessHub
+from src.client.request_enum import RequestEnum
 
 
 class SignalRClient(IChessHub):

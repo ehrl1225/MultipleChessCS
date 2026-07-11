@@ -1,8 +1,8 @@
 from PyQt6.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
-from client.HubAction import HubAction
-from client.chess_hub_interface import IChessHub
-from client.response_enum import ResponseEnum
+from src.client.HubAction import HubAction
+from src.client.chess_hub_interface import IChessHub
+from src.client.response_enum import ResponseEnum
 
 
 class LobbyBridge(QObject):

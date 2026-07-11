@@ -1,13 +1,11 @@
-from unittest import case
-
 from PyQt6.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
-from chess.chess_team import ChessTeam
-from client.HubAction import HubAction
-from client.chess_hub_interface import IChessHub
-from client.response_enum import ResponseEnum
-from client.request_enum import RequestEnum
-from gui.user_data import UserData
+from src.chess.chess_team import ChessTeam
+from src.client.HubAction import HubAction
+from src.client.chess_hub_interface import IChessHub
+from src.client.response_enum import ResponseEnum
+from src.client.request_enum import RequestEnum
+from src.gui.user_data import UserData
 
 
 class RoomBridge(QObject):

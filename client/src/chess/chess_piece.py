@@ -1,7 +1,7 @@
 from typing import Optional
 
-from chess.chess_class import ChessClass
-from chess.chess_color import ChessColor
+from src.chess.chess_class import ChessClass
+from src.chess.chess_color import ChessColor
 
 alpha: list[str] = "A B C D E F G H".split(" ")
 
