@@ -3,10 +3,10 @@ import os
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QPixmap, QColor
 from PyQt6.QtWidgets import QTableWidget, QLabel, QTableWidgetItem
-from chess.chess_board import ChessBoard
-from chess.chess_class import ChessClass
-from chess.chess_color import ChessColor
-from gui.qcolors import Colors
+from src.chess.chess_board import ChessBoard
+from src.chess.chess_class import ChessClass
+from src.chess.chess_color import ChessColor
+from src.gui.qcolors import Colors
 
 alphas:list[str] = ["A", "B", "C", "D", "E", "F", "G", "H"]
 nums:list[str] = ["8", "7", "6", "5", "4", "3", "2", "1"]

@@ -3,12 +3,13 @@ import sys
 from PyQt6.QtGui import QGuiApplication
 from PyQt6.QtQml import QQmlApplicationEngine
 
-from chess.chess_board import ChessBoard
-from gui.bridge import AuthBridge, ChessBoardBridge
-from client.signalr_client import SignalRClient
-from gui.bridge.lobby_bridge import LobbyBridge
-from gui.bridge.room_bridge import RoomBridge
-from gui.user_data import UserData
+from src.chess.chess_board import ChessBoard
+from src.gui.bridge import AuthBridge, ChessBoardBridge
+from src.client.signalr_client import SignalRClient
+from src.gui.bridge.lobby_bridge import LobbyBridge
+from src.gui.bridge.room_bridge import RoomBridge
+from src.gui.user_data import UserData
+from src.gui.bridge.chat_bridge import ChatBridge
 
 
 def main():
@@ -22,12 +23,14 @@ def main():
     auth_bridge = AuthBridge(signalr_client, userdata)
     lobby_bridge = LobbyBridge(signalr_client)
     room_bridge = RoomBridge(signalr_client, userdata)
+    chat_bridge = ChatBridge(signalr_client)
     engine.rootContext().setContextProperty("bridge", bridge)
     engine.rootContext().setContextProperty("authBridge", auth_bridge)
     engine.rootContext().setContextProperty("lobbyBridge", lobby_bridge)
     engine.rootContext().setContextProperty("roomBridge", room_bridge)
+    engine.rootContext().setContextProperty("chatBridge", chat_bridge)
 
-    engine.load("gui/qml/Main.qml")
+    engine.load("src/gui/qml/Main.qml")
     result = signalr_client.connect()
     if result:
         sys.exit(app.exec())

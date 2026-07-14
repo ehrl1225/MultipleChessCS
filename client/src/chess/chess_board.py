@@ -1,6 +1,6 @@
-from chess.chess_class import ChessClass
-from chess.chess_color import ChessColor
-from chess.chess_piece import ChessPiece, knightRLocations, Location
+from src.chess.chess_class import ChessClass
+from src.chess.chess_color import ChessColor
+from src.chess.chess_piece import ChessPiece, knightRLocations, Location
 
 class ChessBoard(object):
     """
