@@ -1,7 +1,9 @@
+from src.chat.chat_target import ChatTarget
+
 
 class Chat:
     def __init__(self, chat_target, sender, message):
-        self.__chat_target = chat_target
+        self.__chat_target:ChatTarget = chat_target
         self.__sender = sender
         self.__message = message
 
@@ -16,3 +18,6 @@ class Chat:
 
     def copy(self):
         return Chat(self.__chat_target, self.__sender, self.__message)
+
+    def to_message(self):
+        return f"[{ChatTarget(self.__chat_target)}] {self.__sender}: {self.__message}"

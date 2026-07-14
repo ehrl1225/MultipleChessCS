@@ -4,6 +4,7 @@ from typing import Callable
 from signalrcore.hub_connection_builder import HubConnectionBuilder
 from signalrcore.hub.base_hub_connection import BaseHubConnection
 
+from chat.chat_target import ChatTarget
 from src.client.chess_hub_interface import IChessHub
 from src.client.request_enum import RequestEnum
 
@@ -80,5 +81,8 @@ class SignalRClient(IChessHub):
 
     def leave_team(self, room_id: str):
         self.send(RequestEnum.LeaveTeam, [room_id])
+
+    def send_chat(self, chat_target: ChatTarget, message: str):
+        self.send(RequestEnum.SendChat, [chat_target, message])
 
 

@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from typing import Callable, Any
 
+from chat.chat_target import ChatTarget
+
 
 class IChessHub(metaclass=ABCMeta):
 
@@ -33,6 +35,9 @@ class IChessHub(metaclass=ABCMeta):
 
     @abstractmethod
     def leave_team(self, room_id: str): pass
+
+    @abstractmethod
+    def send_chat(self, chat_target: ChatTarget, message: str): pass
 
 
 

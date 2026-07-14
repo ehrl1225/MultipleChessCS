@@ -47,11 +47,14 @@ ApplicationWindow {
                     height: parent.height - 80
                     color: "white"
                     border.color: "#e9ecef"
-                    
-                    Text {
-                        anchors.centerIn: parent
-                        text: "[채팅 내용 표시 영역]"
-                        color: "#adb5bd"
+
+                    ListView {
+                        id: chatListView
+                        anchors.fill: parent
+                        model: chatBridge.messages
+                        delegate: Text {
+                            text: modelData
+                        }
                     }
                 }
 
@@ -71,7 +74,7 @@ ApplicationWindow {
                         Layout.fillWidth: true
                         placeholderText: "메시지를 입력하세요..."
                         onAccepted: {
-
+                            chatBridge.send_message(chatTargetCombo.currentIndex, messageInput.text);
                             messageInput.text = "";
                         }
                     }

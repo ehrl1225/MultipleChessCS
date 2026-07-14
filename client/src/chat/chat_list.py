@@ -4,12 +4,15 @@ from src.chat.chat_target import ChatTarget
 
 class ChatList:
 
-    def __init__(self):
+    def __init__(self, max_chat_count:int = 1000):
         self.__chat_list:list[Chat] = []
+        self.__max_chat_count = max_chat_count
 
     def add_chat(self,chat_target:ChatTarget, sender: str, message: str):
         chat = Chat(chat_target, sender, message)
         self.__chat_list.append(chat)
+        if len(self.__chat_list) > self.__max_chat_count:
+            self.__chat_list.pop(0)
         return chat
 
     def get_chat_list(self):
@@ -30,3 +33,6 @@ class ChatList:
             if target == chat_target:
                 arr.append(chat.copy())
         return arr
+
+    def get_messages(self) -> list[str]:
+        return [chat.to_message() for chat in self.__chat_list]
